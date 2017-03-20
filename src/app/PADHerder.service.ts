@@ -6,24 +6,27 @@ import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class PADHerderService {
-	PADHerderTeamUrl = 'https://www.padherder.com/user-api/team/';
+	PADHerderAPIUrl = 'https://www.padherder.com/user-api';
 
   	constructor (private http: Http) {}
 
-  	getTeam (teamID: string)  {
-  		console.log(this.teamUrl = this.PADHerderTeamUrl + teamID);
+  	getTeam (PADHerder_Team_ID: string)  {
+  	  return this.http
+        .get(this.PADHerderAPIUrl + "/team/" + PADHerder_Team_ID)
+  			.map((response: Response) => response.json())
+  			.do(data => console.log(data))
+  			.catch(this.handleError);
+   	}
 
-  		return this.http
-  			.get(this.teamUrl)
-			.map((response: Response) => response.json())
-			.do(data => console.log(data))
-			.catch(this.handleError);
-	  	);
-  		
-		// console.log(this.asdf);
+    getSubs (PADHerder_ID: string, p: string) {
+      console.log('Converting PADHerder_ID ' + PADHerder_ID + ' to MonsterBook_ID.');
 
-  		// return Observable.throw("this.PADHerderTeamUrl")
-  	}
+      return this.http
+        .get(this.PADHerderAPIUrl + '/monster/' + PADHerder_ID)
+        .map((response: Response) => response.json())
+        .do(data => console.log(data))
+        .catch(this.handleError);
+    }
 
 	private extractData(res: Response) {
     	let body = res.json();

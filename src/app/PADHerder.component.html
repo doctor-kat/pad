@@ -1,8 +1,31 @@
+
 <div class="input-group">
   <span class="input-group-addon" id="basic-addon1">ID</span>
-  <input type="text" class="form-control" placeholder="PADHerder Team ID" aria-describedby="basic-addon1" [(ngModel)]="teamID">
+  
+  <input type="text"
+  	class="form-control"
+  	placeholder="PADHerder Team ID"
+  	aria-describedby="basic-addon1"
+  	[(ngModel)]="teamID"
+  	(ngModelChange)="getTeam($event)"
+  	minlength="6"
+  	name="input"
+  	#input="ngModel"
+  >
+</div>
+
+<div *ngIf="input.errors">
+	<div [hidden]="!input.errors.minlength">
+		ID must be at least 6 characters long.
+	</div>
 </div>
 
 <h3>Your PADHerder Team ID is {{ teamID }}.</h3>
 
-<h4>Team Name: {{ testString }}</h4>
+<h4>Team Name: {{ team.name }}</h4>
+<br>Leader: {{ team.leader }}
+<br>Sub1: {{ team.sub1 }}
+<br>Sub2: {{ team.sub2 }}
+<br>Sub3: {{ team.sub3 }}
+<br>Sub4: {{ team.sub4 }}
+<br>Helper: {{ team.friend_leader }}

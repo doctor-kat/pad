@@ -15,18 +15,22 @@ var Observable_1 = require('rxjs/Observable');
 var PADHerderService = (function () {
     function PADHerderService(http) {
         this.http = http;
-        this.PADHerderTeamUrl = 'https://www.padherder.com/user-api/team/';
+        this.PADHerderAPIUrl = 'https://www.padherder.com/user-api';
     }
-    PADHerderService.prototype.getTeam = function (teamID) {
-        console.log(this.teamUrl = this.PADHerderTeamUrl + teamID);
+    PADHerderService.prototype.getTeam = function (PADHerder_Team_ID) {
         return this.http
-            .get(this.teamUrl)
+            .get(this.PADHerderAPIUrl + "/team/" + PADHerder_Team_ID)
             .map(function (response) { return response.json(); })
             .do(function (data) { return console.log(data); })
             .catch(this.handleError);
-        ;
-        // console.log(this.asdf);
-        // return Observable.throw("this.PADHerderTeamUrl")
+    };
+    PADHerderService.prototype.getSubs = function (PADHerder_ID, p) {
+        console.log('Converting PADHerder_ID ' + PADHerder_ID + ' to MonsterBook_ID.');
+        return this.http
+            .get(this.PADHerderAPIUrl + '/monster/' + PADHerder_ID)
+            .map(function (response) { return response.json(); })
+            .do(function (data) { return console.log(data); })
+            .catch(this.handleError);
     };
     PADHerderService.prototype.extractData = function (res) {
         var body = res.json();

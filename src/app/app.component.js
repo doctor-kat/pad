@@ -11,21 +11,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var PADHerder_service_1 = require('./PADHerder.service');
 var AppComponent = (function () {
-    // mode = 'Observable';
+    // asdf = {};
     function AppComponent(PADHerderService) {
         this.PADHerderService = PADHerderService;
         this.title = 'PADHerder App';
         this.teamID = '200357';
-        this.testString = 'test';
-        this.errorMessage = '';
-        // this.testString = this.getTeam()
+        this.PADHerder_Team = {};
+        this.team = {};
     }
     AppComponent.prototype.getTeam = function (teamID) {
         var _this = this;
         this.PADHerderService.getTeam(teamID)
-            .subscribe(
-        // function(response) { console.log("Success Response: " + response)},
-        function (response) { return _this.testString = response.name; }, function (error) { console.log("Error happened: " + error); }, function () { console.log("the subscription is completed"); });
+            .subscribe(function (response) {
+            for (var _i = 0, _a = ["name", "leader", "sub1", "sub2", "sub3", "sub4", "friend_leader"]; _i < _a.length; _i++) {
+                var p = _a[_i];
+                _this.team[p] = response[p];
+            }
+        }, function (error) { console.log("Error happened: " + error); }, function () {
+            console.log("Subscribed to /team/[id].");
+            for (var _i = 0, _a = ["leader", "sub1", "sub2", "sub3", "sub4"]; _i < _a.length; _i++) {
+                var p = _a[_i];
+                _this.getSubs(_this.team[p], p);
+            }
+        });
+    };
+    AppComponent.prototype.getSubs = function (team, p) {
+        var _this = this;
+        this.PADHerderService.getSubs(team, p)
+            .subscribe(function (response) {
+            console.log(_this.team[p] = response.monster);
+        }, function (error) { console.log("Error happened: " + error); }, function () { console.log("Subscribed to /monster/[id]."); });
     };
     AppComponent.prototype.ngOnInit = function () { this.getTeam(this.teamID); };
     AppComponent = __decorate([

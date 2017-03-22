@@ -5,6 +5,7 @@ import { FormsModule }		from '@angular/forms';
 import './rxjs-extensions';
 
 import { AppComponent }		from './app.component';
+import { TeamPanel }		from './TeamPanel.component';
 import { PADHerderService }	from './PADHerder.service';
 
 @NgModule({
@@ -14,7 +15,7 @@ import { PADHerderService }	from './PADHerder.service';
   	JsonpModule,
   	FormsModule
   ],
-  declarations: [ AppComponent ],
+  declarations: [ AppComponent, TeamPanel ],
   providers:	[ PADHerderService ],
   bootstrap:    [ AppComponent ]
 })

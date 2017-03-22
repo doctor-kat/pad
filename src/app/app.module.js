@@ -14,6 +14,7 @@ var http_1 = require('@angular/http');
 var forms_1 = require('@angular/forms');
 require('./rxjs-extensions');
 var app_component_1 = require('./app.component');
+var TeamPanel_component_1 = require('./TeamPanel.component');
 var PADHerder_service_1 = require('./PADHerder.service');
 var AppModule = (function () {
     function AppModule() {
@@ -26,7 +27,7 @@ var AppModule = (function () {
                 http_1.JsonpModule,
                 forms_1.FormsModule
             ],
-            declarations: [app_component_1.AppComponent],
+            declarations: [app_component_1.AppComponent, TeamPanel_component_1.TeamPanel],
             providers: [PADHerder_service_1.PADHerderService],
             bootstrap: [app_component_1.AppComponent]
         }), 

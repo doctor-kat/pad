@@ -4,11 +4,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 import { PADHerderService } from './PADHerder.service';
+import { TeamPanel } from './TeamPanel.component';
 
 @Component({
   moduleId: module.id,
   selector: 'my-app',
-  // viewProviders: [HTTP_PROVIDERS],
   templateUrl: './PADHerder.component.html',
   providers: [PADHerderService]
 })
@@ -18,7 +18,6 @@ export class AppComponent {
   teamID = '200357';
   PADHerder_Team = {};
   team = {};
-  // asdf = {};
 
   constructor(private PADHerderService: PADHerderService) {}
 
@@ -40,17 +39,20 @@ export class AppComponent {
     );
   }
 
-  getSubs (team: {}, p: string) {
+  getSubs (team: any, p: string) {
       this.PADHerderService.getSubs(team, p)
           .subscribe(
               response => {
                   console.log(this.team[p] = response.monster);
-              }
+              },
               function(error) { console.log("Error happened: " + error) },
               function() { console.log("Subscribed to /monster/[id].") }
           );
+          return true;
   }
 
-  ngOnInit() { this.getTeam(this.teamID); }
+  ngOnInit() {
+    this.getTeam(this.teamID);
+  }
 
 }

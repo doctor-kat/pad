@@ -1,1 +1,26 @@
-{"id": 200357, "url": "https://www.padherder.com/user-api/team/200357/", "name": "Dark Sakuya", "description": "", "favourite": false, "order": 1, "team_group": 1, "leader": 5203695, "sub1": 4241246, "sub2": 6474313, "sub3": 4241241, "sub4": 5478116, "friend_leader": 2389, "friend_level": 99, "friend_hp": 99, "friend_atk": 99, "friend_rcv": 99, "friend_skill": 5, "friend_awakening": 9, "friend_latent1": 0, "friend_latent2": 0, "friend_latent3": 0, "friend_latent4": 0, "friend_latent5": 0}
+{
+	"id": 200357,
+	"url": "https://www.padherder.com/user-api/team/200357/",
+	"name": "Dark Sakuya",
+	"description": "",
+	"favourite": false,
+	"order": 1,
+	"team_group": 1,
+	"leader": 5203695,
+	"sub1": 4241246,
+	"sub2": 6474313,
+	"sub3": 4241241,
+	"sub4": 5478116,
+	"friend_leader": 2389,
+	"friend_level": 99,
+	"friend_hp": 99,
+	"friend_atk": 99,
+	"friend_rcv": 99,
+	"friend_skill": 5,
+	"friend_awakening": 9,
+	"friend_latent1": 0,
+	"friend_latent2": 0,
+	"friend_latent3": 0,
+	"friend_latent4": 0,
+	"friend_latent5": 0
+}

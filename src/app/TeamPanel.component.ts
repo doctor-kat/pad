@@ -9,8 +9,8 @@ import { Component } from '@angular/core';
 export class TeamPanel {
 
   ngOnInit() {
-    let canvas = document.getElementById('canvas1');
-    let ctx = canvas.getContext('2d');
+    var canvas = <HTMLCanvasElement> document.getElementById('canvas1');
+    var ctx = canvas.getContext('2d');
 
       let grd = ctx.createLinearGradient(175, 85, 300, 100);
       grd.addColorStop(0, '#ffcd00');   

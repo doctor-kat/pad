@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var PADHerder_service_1 = require('./PADHerder.service');
 var AppComponent = (function () {
-    // asdf = {};
     function AppComponent(PADHerderService) {
         this.PADHerderService = PADHerderService;
         this.title = 'PADHerder App';
@@ -41,13 +40,15 @@ var AppComponent = (function () {
             .subscribe(function (response) {
             console.log(_this.team[p] = response.monster);
         }, function (error) { console.log("Error happened: " + error); }, function () { console.log("Subscribed to /monster/[id]."); });
+        return true;
     };
-    AppComponent.prototype.ngOnInit = function () { this.getTeam(this.teamID); };
+    AppComponent.prototype.ngOnInit = function () {
+        this.getTeam(this.teamID);
+    };
     AppComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
             selector: 'my-app',
-            // viewProviders: [HTTP_PROVIDERS],
             templateUrl: './PADHerder.component.html',
             providers: [PADHerder_service_1.PADHerderService]
         }), 

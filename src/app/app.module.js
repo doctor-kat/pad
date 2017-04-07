@@ -14,8 +14,12 @@ var http_1 = require('@angular/http');
 var forms_1 = require('@angular/forms');
 require('./rxjs-extensions');
 var app_component_1 = require('./app.component');
-var TeamPanel_component_1 = require('./TeamPanel.component');
-var PADHerder_service_1 = require('./PADHerder.service');
+var TeamPanel_component_1 = require('./TeamPanel/TeamPanel.component');
+var PADHerder_component_1 = require('./PADHerder/PADHerder.component');
+var PADHerder_service_1 = require('./PADHerder/PADHerder.service');
+var leaderSkill_component_1 = require('./LeaderSkill/leaderSkill.component');
+var dictionary_service_1 = require('./LeaderSkill/shared/dictionary.service');
+var pipe_module_1 = require('./LeaderSkill/shared/pipe.module');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -27,8 +31,8 @@ var AppModule = (function () {
                 http_1.JsonpModule,
                 forms_1.FormsModule
             ],
-            declarations: [app_component_1.AppComponent, TeamPanel_component_1.TeamPanel],
-            providers: [PADHerder_service_1.PADHerderService],
+            declarations: [app_component_1.AppComponent, TeamPanel_component_1.TeamPanel, PADHerder_component_1.PADHerderComponent, leaderSkill_component_1.LeaderSkillComponent, pipe_module_1.KeysPipe],
+            providers: [PADHerder_service_1.PADHerderService, dictionary_service_1.DictionaryService],
             bootstrap: [app_component_1.AppComponent]
         }), 
         __metadata('design:paramtypes', [])

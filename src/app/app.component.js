@@ -9,50 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var PADHerder_service_1 = require('./PADHerder.service');
 var AppComponent = (function () {
-    function AppComponent(PADHerderService) {
-        this.PADHerderService = PADHerderService;
-        this.title = 'PADHerder App';
-        this.teamID = '200357';
-        this.PADHerder_Team = {};
-        this.team = {};
+    function AppComponent() {
     }
-    AppComponent.prototype.getTeam = function (teamID) {
-        var _this = this;
-        this.PADHerderService.getTeam(teamID)
-            .subscribe(function (response) {
-            for (var _i = 0, _a = ["name", "leader", "sub1", "sub2", "sub3", "sub4", "friend_leader"]; _i < _a.length; _i++) {
-                var p = _a[_i];
-                _this.team[p] = response[p];
-            }
-        }, function (error) { console.log("Error happened: " + error); }, function () {
-            console.log("Subscribed to /team/[id].");
-            for (var _i = 0, _a = ["leader", "sub1", "sub2", "sub3", "sub4"]; _i < _a.length; _i++) {
-                var p = _a[_i];
-                _this.getSubs(_this.team[p], p);
-            }
-        });
-    };
-    AppComponent.prototype.getSubs = function (team, p) {
-        var _this = this;
-        this.PADHerderService.getSubs(team, p)
-            .subscribe(function (response) {
-            console.log(_this.team[p] = response.monster);
-        }, function (error) { console.log("Error happened: " + error); }, function () { console.log("Subscribed to /monster/[id]."); });
-        return true;
-    };
-    AppComponent.prototype.ngOnInit = function () {
-        this.getTeam(this.teamID);
-    };
     AppComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
             selector: 'my-app',
-            templateUrl: './PADHerder.component.html',
-            providers: [PADHerder_service_1.PADHerderService]
+            template: "\n    <h1>PAD Herder Section</h1>\n    <pad-herder></pad-herder>\n    <hr>\n\t<h1>Team Panel Section</h1>\n    <team-panel></team-panel>\n    <hr>\n    <h1>Leader Skill Section</h1>\n    <leader-skill></leader-skill>\n  "
         }), 
-        __metadata('design:paramtypes', [PADHerder_service_1.PADHerderService])
+        __metadata('design:paramtypes', [])
     ], AppComponent);
     return AppComponent;
 }());

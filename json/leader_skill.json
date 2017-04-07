@@ -1,7 +1,7 @@
 {
 	"Dark Athena": {
 		"name": "Guardian of the Imperial Capital, Athena",
-		"conditional": [
+		"unconditional": [
 			["god", 1.5, 3.5, 1.0, 1.0],
 			["attacker", 1.5, 3.5, 1.0, 1.0],
 			["devil", 1.5, 3.5, 1.0]
@@ -9,26 +9,24 @@
 		"color match": {
 			"color": ["dark", "water"],
 			"multiplier": [1.0, 2.0, 2.0]
-		},
+		}
 	},
 
 	"Aizen": {
 		"name": "Former Captain of Squad 5, Sosuke Aizen",
-		"conditional": [
-			["dark", 1.0, 6.0, 1.0, 1.0]
-		],
-		"conditional": [
+		"unconditional": [
+			["dark", 1.0, 6.0, 1.0, 1.0],
 			["water", 1.0, 1.0, 2.0, 1.0]
 		],
 		"color cross": {
 			"color": ["dark"],
-			"multiplier": [1.0,2.0,1.0,1.0]
+			"multiplier": [1.0, 2.0, 1.0, 1.0]
 		}
 	},
 
 	"Juri": {
 		"name": "清杖の龍機博士, Juri",
-		"conditional": [
+		"unconditional": [
 			["water", 1.5, 1.5, 1.0, 1.0],
 			["wood", 1.5, 1.5, 1.0, 1.0]
 		],
@@ -40,7 +38,7 @@
 
 	"Kushinada": {
 		"name": "Reincarnated Kushinadahime",
-		"conditional": [
+		"unconditional": [
 			["healer", 1.5, 1.5, 1.0, 1.0]
 		],
 		"combo count": {
@@ -54,12 +52,12 @@
 
 	"Ra Dragon": {
 		"name": "Almighty God, Ra Dragon",
-		"conditional": [
+		"unconditional": [
 			["god", 1.5, 1.5, 1.5, 1.0]
 		],
 		"flex match": {
 			"color": ["fire","water","wood","light","dark","heart"],
-			"multiplier": [
+			"multipliers": [
 				[4, 1.0, 2.0, 1.0, 1.0],
 				[6, 1.0, 8.0, 1.0, 1.0]
 			]
@@ -96,7 +94,7 @@
 
 	"Astaroth": {
 		"name": "Reincarnated Astaroth",
-		"conditional": [
+		"unconditional": [
 			["healer", 2.0, 2.0, 1.0, 1.0],
 			["devil", 2.0, 2.0, 1.0, 1.0]
 		],
@@ -120,7 +118,7 @@
 		},
 		"heart cross": 	{
 			"multiplier": [1.0, 4.0, 1.0, 0.65]
-		},
+		}
 	},
 
 	"Ilmina": {
@@ -135,7 +133,7 @@
 
 	"Meri": {
 		"name": "浄弓の鋼星神, Meridionalis",
-		"conditional": [
+		"unconditional": [
 			["water", 1.0, 2.5, 2.5, 1.0]
 		],
 		"connected orbs": {

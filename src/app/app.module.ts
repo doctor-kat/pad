@@ -5,8 +5,16 @@ import { FormsModule }		from '@angular/forms';
 import './rxjs-extensions';
 
 import { AppComponent }		from './app.component';
-import { TeamPanel }		from './TeamPanel.component';
-import { PADHerderService }	from './PADHerder.service';
+import { TeamPanel }		from './TeamPanel/TeamPanel.component';
+import { PADHerderComponent } from './PADHerder/PADHerder.component';
+import { PADHerderService }	from './PADHerder/PADHerder.service';
+
+import { LeaderSkillComponent } from './LeaderSkill/leaderSkill.component';
+import { DataService } from './LeaderSkill/shared/data.service';
+import { ParseService } from './LeaderSkill/parse.service';
+import { InterpretService } from './LeaderSkill/interpret.service';
+import { DictionaryService } from './LeaderSkill/shared/dictionary.service';
+import { KeysPipe } from './LeaderSkill/shared/pipe.module';
 
 @NgModule({
   imports:      [
@@ -15,8 +23,8 @@ import { PADHerderService }	from './PADHerder.service';
   	JsonpModule,
   	FormsModule
   ],
-  declarations: [ AppComponent, TeamPanel ],
-  providers:	[ PADHerderService ],
+  declarations: [ AppComponent, TeamPanel, PADHerderComponent, LeaderSkillComponent, KeysPipe ],
+  providers:	[ PADHerderService, DictionaryService ],
   bootstrap:    [ AppComponent ]
 })
 

@@ -1,4 +1,3 @@
-// PADHerder HTTP Service
 import { Injectable }	from '@angular/core';
 import { Http, Response }	from '@angular/http';
 import { Observable } from 'rxjs/Observable';
@@ -14,17 +13,17 @@ export class PADHerderService {
   	  return this.http
         .get(this.PADHerderAPIUrl + "/team/" + PADHerder_Team_ID)
   			.map((response: Response) => response.json())
-  			.do(data => console.log(data))
+  			// .do(data => console.log(data))
   			.catch(this.handleError);
    	}
 
     getSubs (PADHerder_ID: string, p: string) {
-      console.log('Converting PADHerder_ID ' + PADHerder_ID + ' to MonsterBook_ID.');
+      // console.log('Converting PADHerder_ID ' + PADHerder_ID + ' to MonsterBook_ID.');
 
       return this.http
         .get(this.PADHerderAPIUrl + '/monster/' + PADHerder_ID)
         .map((response: Response) => response.json())
-        .do(data => console.log(data))
+        // .do(data => console.log(data))
         .catch(this.handleError);
     }
 

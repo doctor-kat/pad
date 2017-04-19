@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var team_service_1 = require('./shared/team.service');
 var AppComponent = (function () {
     function AppComponent() {
     }
@@ -16,7 +17,8 @@ var AppComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'my-app',
-            template: "\n    <h1>PAD Herder Section</h1>\n    <pad-herder></pad-herder>\n    <hr>\n\t<h1>Team Panel Section</h1>\n    <team-panel></team-panel>\n    <hr>\n    <h1>Leader Skill Section</h1>\n    <leader-skill></leader-skill>\n  "
+            template: "\n    <h1>PAD Herder Section</h1>\n    <pad-herder></pad-herder>\n    <hr>\n\t<h1>Team Panel Section</h1>\n    <team-panel></team-panel>\n    <hr>\n    <h1>Leader Skill Section</h1>\n    <leader-skill></leader-skill>\n  ",
+            providers: [team_service_1.TeamService],
         }), 
         __metadata('design:paramtypes', [])
     ], AppComponent);

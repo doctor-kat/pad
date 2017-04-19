@@ -12,27 +12,20 @@ var core_1 = require('@angular/core');
 var platform_browser_1 = require('@angular/platform-browser');
 var http_1 = require('@angular/http');
 var forms_1 = require('@angular/forms');
+var pipe_module_1 = require('./LeaderSkill/shared/pipe.module');
 require('./rxjs-extensions');
 var app_component_1 = require('./app.component');
-var TeamPanel_component_1 = require('./TeamPanel/TeamPanel.component');
 var PADHerder_component_1 = require('./PADHerder/PADHerder.component');
-var PADHerder_service_1 = require('./PADHerder/PADHerder.service');
+var TeamPanel_component_1 = require('./TeamPanel/TeamPanel.component');
 var leaderSkill_component_1 = require('./LeaderSkill/leaderSkill.component');
-var dictionary_service_1 = require('./LeaderSkill/shared/dictionary.service');
-var pipe_module_1 = require('./LeaderSkill/shared/pipe.module');
 var AppModule = (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         core_1.NgModule({
-            imports: [
-                platform_browser_1.BrowserModule,
-                http_1.HttpModule,
-                http_1.JsonpModule,
-                forms_1.FormsModule
-            ],
-            declarations: [app_component_1.AppComponent, TeamPanel_component_1.TeamPanel, PADHerder_component_1.PADHerderComponent, leaderSkill_component_1.LeaderSkillComponent, pipe_module_1.KeysPipe],
-            providers: [PADHerder_service_1.PADHerderService, dictionary_service_1.DictionaryService],
+            imports: [platform_browser_1.BrowserModule, http_1.HttpModule, http_1.JsonpModule, forms_1.FormsModule],
+            declarations: [app_component_1.AppComponent, pipe_module_1.KeysPipe,
+                PADHerder_component_1.PADHerderComponent, TeamPanel_component_1.TeamPanel, leaderSkill_component_1.LeaderSkillComponent],
             bootstrap: [app_component_1.AppComponent]
         }), 
         __metadata('design:paramtypes', [])

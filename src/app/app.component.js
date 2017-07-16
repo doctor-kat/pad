@@ -17,7 +17,7 @@ var AppComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'my-app',
-            template: "\n    <h1>PAD Herder Section</h1>\n    <pad-herder></pad-herder>\n    <hr>\n\t<h1>Team Panel Section</h1>\n    <team-panel></team-panel>\n    <hr>\n    <h1>Leader Skill Section</h1>\n    <leader-skill></leader-skill>\n  ",
+            template: "\n    <h1>PAD Herder Section</h1>\n    <pad-herder></pad-herder>\n    <hr>\n    <leader-skill></leader-skill>\n  ",
             providers: [team_service_1.TeamService],
         }), 
         __metadata('design:paramtypes', [])

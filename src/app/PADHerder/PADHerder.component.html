@@ -21,10 +21,10 @@
 
 <div class="col-md-8">
   <div class="panel panel-default">
-    <div class="panel-heading">({{ padh_team_id }}) {{ team.name }}</div>
+    <div class="panel-heading">({{ padh_team_id }}) {{ team?.name }}</div>
 
     <!-- Table -->
-    <table class="table">
+    <table *ngIf="team.name" class="table">
       <tr>
         <th></th>
         <th></th>
@@ -38,18 +38,21 @@
       <tr *ngFor="let p of ['leader','sub1','sub2','sub3','sub4','friend_leader']">
         <td>{{ p }}</td>
         <td></td>
-        <td><a href="{{team[p].padh_url}}">{{ team[p].pad_id }}</a></td>
+        <td><a href="{{ team[p].padh_url }}">{{ team[p].pad_id }}</a></td>
+       
         <td>{{ team[p].name }}</td>
+       
         <td>{{ team[p].level }}</td>
         <td>{{ team[p].hp | number:'1.0-0'}} (+{{ team[p].plus_hp }})</td>
         <td>{{ team[p].atk | number:'1.0-0' }} (+{{ team[p].plus_atk }})</td>
         <td>{{ team[p].rcv | number:'1.0-0' }} (+{{ team[p].plus_rcv }})</td>
+      
       </tr>
     </table>
     <!-- <div class="panel-footer">{{ team | json }}</div> -->
-    <div class="panel-footer">
-      leader: {{ team.leader.leader_skill_desc }}<br>
-      friend leader: {{ team.friend_leader.leader_skill_desc }}
+    <div *ngIf="team.name" class="panel-footer">
+      leader: {{ team?.leader.leader_skill_desc }}<br>
+      friend leader: {{ team?.friend_leader.leader_skill_desc }}
     </div>
   </div><!-- /panel -->
 </div>

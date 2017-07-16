@@ -17,7 +17,7 @@ export class DataService {
       	"Ilmina": "All attribute cards ATK x4.5, 25% all damage reduction when attacking with Light and Fire orb types at the same time. Change the board to 7x6 size.",
       	"Meri": "No skyfall matches. Water attribute cards ATK x2.5, RCV x2.5. ATK x3 when simultaneously clearing 6 connected Water orbs. ATK x0.5 for each additional orb, up to ATK x4.5 at 9 connected orb."
       }
-   	}
+   }
    	
    	getKeys() {
    	  return ["Dark Athena", "Aizen", "Juri", "Kushinada", "Ra Dragon", "Myr", "Anubis", "Uruka", "Astaroth", "Ronove", "Ilmina", "Meri"];

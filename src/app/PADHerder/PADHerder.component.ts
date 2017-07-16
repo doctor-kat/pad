@@ -1,35 +1,42 @@
 import { Component }		from '@angular/core';
 import { Http }				from '@angular/http';
 import { Observable }		from 'rxjs/rx';
-// 
+
 import 'rxjs/add/operator/filter';
 
 import { PADHerderService }	from './PADHerder.service';
 import { TeamService }		from '../shared/team.service';
 import { Monster }			from '../shared/monster';
+import { Team }             from '../shared/team';
 
 @Component({
     moduleId: module.id,
     selector: 'pad-herder',
     templateUrl: './PADHerder.component.html',
-    providers: [PADHerderService, TeamService]
+    providers: [ PADHerderService ]
 })
 
 export class PADHerderComponent {
-    constructor(private PADHerderService: PADHerderService, private teamService: TeamService) {}
+    constructor(private PADHerderService: PADHerderService, public teamService: TeamService) {}
 
     title = 'PADHerder App';
-    padh_team_id = '200357';
+    padh_team_id = '104973';
     PADHerder_Team = {};
-    team = this.teamService.team;
+    team = new Team;
     ls_db = [{}];
     monster_db = [{}];
 
     getTeam(padh_team_id: string) {
+        // console.log("getting team");
+        // console.log("teamService.team",this.teamService.team);
+
+        // need to update teamService.team directly, instead of local and update
+
         return this.PADHerderService.getTeam(padh_team_id)
             .subscribe(
                 response => {
                     this.team.name = response.name; // copy team name
+                    // console.log("team with only name",this.team);
 
                     // copy padh_id for leader and subs
                     ["leader", "sub1", "sub2", "sub3", "sub4"].forEach((slot,i) => {
@@ -52,6 +59,8 @@ export class PADHerderComponent {
                 },
                 () => {
                 	console.log("Subscribed to /team/" + padh_team_id + ".");
+                    this.teamService.setTeam(this.team);
+                    // console.log("Updated team.service");
                 }
             );
     }
@@ -63,8 +72,9 @@ export class PADHerderComponent {
         ["friend_level", "friend_hp", "friend_atk", "friend_rcv", "friend_skill", "friend_awakening"].forEach((item, i) => {
             this.team.friend_leader[map[i]] = response[item];
         });
-
+        
 		this.getMonStats("friend_leader"); // get stats for friend leader
+        // console.log("team after friend data",this.team);
     }
 
     getMonData(padh_id: string, slot: string) {
@@ -83,12 +93,14 @@ export class PADHerderComponent {
                 },
                 () => {
                     console.log("Subscribed to /monster/" + this.team[slot].pad_id);
+                    this.teamService.setTeam(this.team);
+                    console.log("Updated team.service");
                 }
             );
     }
 
     getLeaderSkillDesc(slot: string) {
-    	let ls = this.ls_db.filter(ls => ls['name'] == this.team[slot].leader_skill)[0];
+        let ls = this.ls_db.filter(ls => ls['name'] == this.team[slot].leader_skill)[0];
     	this.team[slot].leader_skill_desc = ls['effect']; 
     }
 
@@ -127,7 +139,23 @@ export class PADHerderComponent {
     }
 
     initialize() {
-        return Observable.forkJoin(
+        this.teamService.subject
+            .subscribe(
+                response => {
+                    this.team = response;
+                    // console.log("new update:",response);
+                },
+                function(error) {
+                    console.log("Error happened: " + error)
+                },
+                () => {
+                    console.log("Subscribed to team.service.");
+                }
+            );
+
+        // this.team = this.teamService.team;
+
+        Observable.forkJoin(
             this.PADHerderService.getLeaderSkills(), this.PADHerderService.getMonsterInfo()
         ).subscribe(
             response => {

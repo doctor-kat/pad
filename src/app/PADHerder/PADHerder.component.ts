@@ -28,41 +28,53 @@ export class PADHerderComponent {
 
     getTeam(padh_team_id: string) {
         // console.log("getting team");
+        this.padh_team_id = padh_team_id;
+
         // console.log("teamService.team",this.teamService.team);
 
         // need to update teamService.team directly, instead of local and update
+        if (padh_team_id.length == 6) {
+            return this.PADHerderService.getTeam(padh_team_id)
+                .subscribe(
+                    response => {
+                        this.team.name = response.name; // copy team name
+                        // console.log("team with only name",this.team);
 
-        return this.PADHerderService.getTeam(padh_team_id)
-            .subscribe(
-                response => {
-                    this.team.name = response.name; // copy team name
-                    // console.log("team with only name",this.team);
+                        // copy padh_id for leader and subs
+                        ["leader", "sub1", "sub2", "sub3", "sub4"].forEach((slot,i) => {
+                            this.team[slot] = null;
+                            if (response[slot] != null) {
+                                this.team[slot] = new Monster();
+                                this.team[slot].padh_id = response[slot];
+                            }
+                        });
 
-                    // copy padh_id for leader and subs
-                    ["leader", "sub1", "sub2", "sub3", "sub4"].forEach((slot,i) => {
-                        this.team[slot] = null;
-                        if (response[slot] != null) {
-                            this.team[slot] = new Monster();
-                            this.team[slot].padh_id = response[slot];
-                        }
-                    });
+                        // get data using padh_id for leader and subs
+                        let batch = [];
+                        ["leader", "sub1", "sub2", "sub3", "sub4"].forEach((slot,i) => {
+                            batch.push(this.PADHerderService.getMonData(response[slot], slot));
+                        });
 
-                    // get data using padh_id for leader and subs
-                    ["leader", "sub1", "sub2", "sub3", "sub4"].forEach((slot,i) => {
-                        this.getMonData(this.team[slot].padh_id, slot);
-                    });
+                        // console.log(batch);
 
-                    this.getFriendData(response); // get data for friend leader
-                },
-                function(error) {
-                    console.log("Error happened: " + error)
-                },
-                () => {
-                	console.log("Subscribed to /team/" + padh_team_id + ".");
-                    this.teamService.setTeam(this.team);
-                    // console.log("Updated team.service");
-                }
-            );
+                        this.getMonDataBatch(batch);
+
+                        // console.log("got batch")
+
+                        this.getFriendData(response); // get data for friend leader
+                        // this.teamService.setTeam(this.team);
+                        // console.log("Updated team.service");
+                    },
+                    function(error) {
+                        console.log("Error happened: " + error)
+                    },
+                    () => {
+                    	console.log("Subscribed to /team/" + padh_team_id + ".");
+                        // this.teamService.setTeam(this.team);
+                        // console.log("Updated team.service");
+                    }
+                );
+        }
     }
 
     getFriendData(response:any) {
@@ -99,12 +111,40 @@ export class PADHerderComponent {
             );
     }
 
+    getMonDataBatch(batch) {
+        Observable.forkJoin(batch)
+            .subscribe(
+                response => {
+                    // console.log("in batch");
+                    ["leader", "sub1", "sub2", "sub3", "sub4"].forEach((slot,i) => {
+                        let map = ["pad_id", "current_xp", "skill_level", "awakening", "plus_hp", "plus_atk", "plus_rcv", "latent1", "latent2", "latent3", "latent4", "latent5", "padh_url"];
+                        ["monster", "current_xp", "current_skill", "current_awakening", "plus_hp", "plus_atk", "plus_rcv", "latent1", "latent2", "latent3", "latent4", "latent5", "url"].forEach((item, index) => {
+                            this.team[slot][map[index]] = response[i][item];
+                        });
+                        // console.log(slot,this.team);
+                        this.getMonStats(slot);
+                    });
+                },
+                function(error) {
+                    console.log("Error happened: " + error)
+                },
+                () => {
+                    console.log("Subscribed to /monster/s");
+
+                    this.teamService.setTeam(this.team);
+                    console.log("Updated team.service");
+                }
+            );
+    }
+
     getLeaderSkillDesc(slot: string) {
         let ls = this.ls_db.filter(ls => ls['name'] == this.team[slot].leader_skill)[0];
     	this.team[slot].leader_skill_desc = ls['effect']; 
     }
 
     getMonStats(slot: string) {
+        // console.log(this.team);
+
         // search monster_db for matching pad_id
         let mon:any = this.monster_db.filter(monster => monster['id'] == this.team[slot].pad_id)[0];
 

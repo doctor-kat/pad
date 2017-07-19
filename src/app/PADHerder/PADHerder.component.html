@@ -24,7 +24,7 @@
     <div class="panel-heading">({{ padh_team_id }}) {{ team?.name }}</div>
 
     <!-- Table -->
-    <table *ngIf="team.name" class="table">
+    <table *ngIf="team.leader?.name" class="table">
       <tr>
         <th></th>
         <th></th>
@@ -51,8 +51,8 @@
     </table>
     <!-- <div class="panel-footer">{{ team | json }}</div> -->
     <div *ngIf="team.name" class="panel-footer">
-      leader: {{ team?.leader.leader_skill_desc }}<br>
-      friend leader: {{ team?.friend_leader.leader_skill_desc }}
+      leader: {{ team.leader?.leader_skill_desc }}<br>
+      friend leader: {{ team.friend_leader?.leader_skill_desc }}
     </div>
   </div><!-- /panel -->
 </div>

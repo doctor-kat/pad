@@ -50,7 +50,7 @@ export class PADHerderComponent {
                         });
 
                         // get data using padh_id for leader and subs
-                        let batch = [];
+                        let batch: Observable<Monster>[] = []; // is batch type correct?
                         ["leader", "sub1", "sub2", "sub3", "sub4"].forEach((slot,i) => {
                             batch.push(this.PADHerderService.getMonData(response[slot], slot));
                         });
@@ -111,7 +111,7 @@ export class PADHerderComponent {
             );
     }
 
-    getMonDataBatch(batch) {
+    getMonDataBatch(batch: Observable<Monster>[]) {
         Observable.forkJoin(batch)
             .subscribe(
                 response => {

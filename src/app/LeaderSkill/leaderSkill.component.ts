@@ -214,7 +214,7 @@ export class LeaderSkillComponent {
 								enhancedOrbs = 1;
 							}
 	
-							let damage = team[slot].atk * mainOrSubMultiplier * (1.00 + enhancedOrbs*0.06) * (1.00 + (0.25 * (connectedOrbs-3)) * (1+ orbEnhanceAwakenings*0.05);
+							let damage = team[slot].atk * mainOrSubMultiplier * (1.00 + enhancedOrbs*0.06) * (1.00 + (0.25 * (connectedOrbs-3)) * (1+ orbEnhanceAwakenings*0.05));
 							damage = Math.ceil(damage);
 							teamDamage += damage;
 							console.log("sub-attribute damage for",team[slot].name,damage);

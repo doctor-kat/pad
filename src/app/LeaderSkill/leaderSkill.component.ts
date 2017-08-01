@@ -147,6 +147,7 @@ export class LeaderSkillComponent {
         }
 	}
 
+	// abandoned due to logic wall...will do brute force instead
 	estimateMultiplier(team: Team) {
 		// combine all awakenings into one array
 		let combinedTeamAwakenings: number[] = [];
@@ -191,6 +192,7 @@ export class LeaderSkillComponent {
 								enhancedOrbs = 1;
 							}
 
+							// calculate group1 damage
 							let damage: number = team[slot].atk * mainOrSubMultiplier * (1.00 + enhancedOrbs*0.06) * (1.00 + (0.25 * (connectedOrbs-3)) * (1+ orbEnhanceAwakenings*0.05));
 							damage = Math.ceil(damage);
 							// apply conditional multpliers
@@ -220,7 +222,13 @@ export class LeaderSkillComponent {
 							console.log("sub-attribute damage for",team[slot].name,damage);
 						}
 
-					console.log("need multiplier of ",200000/teamDamage,"for 200,000");
+						// assign damage target.  will convert to user input later
+						let target: number = 200000;
+
+						console.log("need multiplier of ",target/teamDamage,"for ",target);
+
+						// calculate number of combos needed based on polynomial approximation of 25% damage increase per combo
+						console.log("estimated number of combos: ", Math.floor((-0.0087*Math.pow(target/teamDamage,2))+(0.5192*target/teamDamage)+(0.6854)));
 
 					}
 
@@ -228,25 +236,71 @@ export class LeaderSkillComponent {
 
 
 
-					for (const attribute in Attribute) {
-						if (Number(attribute) >= 0) { // check type correctly in typescript?
-							// console.log(Attribute[attribute],attribute)
-
-						}
-					}
-
-
-
-				// }
-
-			// calculateMatchDamage(monster: Monster, team: Team);
-				// get number of orb enhance awakenings
-
 
 			// group 2
 		// else ...
 			// calculate 1c of each attribute, apply conditional multipliers, 1 2 and 3 rows
 	}
+
+	calculateMultiplierFromComboSet(team: Team, comboSet: ComboSet) {
+
+	}
+
+	calculateMultipliers(team: Team) {
+		if (leader_skill['conditional'] != undefined) {
+            // if unconditional array has colors with attack multiplier
+            // add 1c, 2c, 3c combinations for those colors
+            // example: blue, dark
+            // return: [blue], [blue, blue], [blue, blue, blue]
+            // [dark], [blue, dark], [blue, dark tpa], [dark tpa, blue]
+        }
+        
+        if (leader_skill['color match'] != undefined) {
+            // consider minimum activation, then add 1c 2c main attribute and sub attribute
+        }
+        
+        if (leader_skill['color cross'] != undefined) {
+            // consider 1, 2 and 3 cross
+        }
+        
+        if (leader_skill['combo count'] != undefined) {
+            // consider range of combo count
+        }
+        
+        if (leader_skill['flex match'] != undefined) {
+            // -_-
+        }
+        
+        if (leader_skill['heart cross'] != undefined) {
+            // consider with and without heart cross
+        }
+        
+        if (leader_skill['connected orbs'] != undefined) {
+            // consider range of connected orbs
+        }
+	}
+
+
+	getMultiplierCombinations(team: Team) {
+		["leader", "friend_leader"].forEach((slot,i) => {
+			if (team[slot] != undefined && team[slot].hasOwnProperty("leader_skill_desc")) {
+				let leader_skill = this.ls[slot]; // fix typing of slot
+				if (leader_skill['conditional'] != undefined) {
+
+		        }
+		        
+		        // color match, heart cross
+		        
+		        if (leader_skill['color cross'] != undefined) {
+
+		        }
+		        
+		        // combo count, flex match, connected orbs
+
+			}
+		});
+	}
+
 
 	initialize() {
 		this.teamService.subject

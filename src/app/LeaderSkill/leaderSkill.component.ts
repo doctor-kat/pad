@@ -9,6 +9,8 @@ import { InterpretService } from './interpret.service';
 import { TeamService } from '../shared/team.service';
 import { Monster }			from '../shared/monster';
 import { Team }             from '../shared/team';
+import { Combo }            from '../shared/combo';
+
 
 
 enum Attribute {
@@ -17,6 +19,36 @@ enum Attribute {
 	wood,
 	light,
 	dark
+}
+
+enum Awakening {
+	"Enhanced HP" = 1,
+	"Enhanced Attack",
+	"Enhanced Heal",
+	"Reduce Fire Damage",
+	"Reduce Water Damage",
+	"Reduce Wood Damage",
+	"Reduce Light Damage",
+	"Reduce Dark Damage",
+	"Auto-Recover",
+	"Resistance-Bind",
+	"Reistance-Dark",
+	"Resistance-Jammers",
+	"Resistance-Poison",
+	"Enhanced Fire Orbs",
+	"Enhanced Water Orbs",
+	"Enhanced Wood Orbs",
+	"Enhanced Light Orbs",
+	"Enhanced Dark Orbs",
+	"Extend Time",
+	"Recover Bind",
+	"Skill Boost",
+	"Enhanced Fire Att.",
+	"Enhanced Water Att.",
+	"Enhanced Wood Att.",
+	"Enhanced Light Att.",
+	"Enhanced Dark Att.",
+	"Two-Pronged Attack" = 27
 }
 
 
@@ -96,58 +128,74 @@ export class LeaderSkillComponent {
 	}
 
 	generateCobmoList(team: Team) {
-	    console.log("Generating combo list for",team.leader.name);
+		if (team.leader && team.friend_leader) {
 
-		let leader_skill = team.leader.leader_skill_desc;	    
-
-		// tpaTeam?
-		// rowTeam > 5 rows
-
-		// color cross, heart cross then add cross
-
-		// flex match, color match, add all colors
-
-		// connected orbs, add min to max connected orbs
-
-		// combo count, conditional, ????
+		    console.log("Generating combo list for",team.leader.name);
+		    // primary attribute is Attribute[this.primaryAttributeIndex]
 
 
 
 
-        if (leader_skill['conditional'] != undefined) {
-            // if unconditional array has colors with attack multiplier
-            // add 1c, 2c, 3c combinations for those colors
-            // example: blue, dark
-            // return: [blue], [blue, blue], [blue, blue, blue]
-            // [dark], [blue, dark], [blue, dark tpa], [dark tpa, blue]
-        }
-        
-        if (leader_skill['color match'] != undefined) {
-            // consider minimum activation, then add 1c 2c main attribute and sub attribute
-        }
-        
-        if (leader_skill['color cross'] != undefined) {
-            // consider 1, 2 and 3 cross
-        }
-        
-        if (leader_skill['combo count'] != undefined) {
-            // consider range of combo count
-        }
-        
-        if (leader_skill['flex match'] != undefined) {
-            // -_-
-        }
-        
-        if (leader_skill['heart cross'] != undefined) {
-            // consider with and without heart cross
-        }
-        
-        if (leader_skill['connected orbs'] != undefined) {
-            // consider range of connected orbs
-        }
+			let currentLS = this.ls['leader'];	    
+			// console.log("current ls",currentLS);
+
+			let comboList: Combo[] = [];
+
+			for (let attribute in ["fire","water","wood","light","dark"]) {
+				comboList.push(new Combo(Attribute[attribute],3,3,false,false));
+			}
+
+			// tpaTeam?
+		    ["leader", "sub1", "sub2", "sub3", "sub4", "friend_leader"].forEach((slot,i) => {
+    	        if (team[slot] != undefined && team[slot].awoken_skills.includes(27)) {
+    	        	comboList.push(new Combo(Attribute[team[slot].element],4,4,false,false));
+    	        }
+    	    });
+
+			// rowTeam > 5 rows
+            
+	        if (currentLS['color cross'] != undefined) {
+	            // consider 1, 2 and 3 cross
+				for (let color of currentLS['color cross'].color) {
+	            	comboList.push(new Combo(color,5,5,false,true));
+	            }
+	        };
+
+	        if (currentLS['heart cross'] != undefined) {
+	            comboList.push(new Combo('heart',5,5,false,true))
+	        }
+	        	
+	        if (currentLS['connected orbs'] != undefined) {
+	            // consider range of connected orbs
+				for (let color of currentLS['flex match'].color) {
+					let lowerBound = currentLS['connected orbs'].multipler[0][0]; // need to make this more verbose
+					let upperBound = currentLS['connected orbs'].multipler[1][0]; // need to make this more verbose				
+	            	for (let i = lowerBound; i >= upperBound; i++) {
+	            		comboList.push(new Combo(color,i,i,false,false));
+						comboList.push(new Combo(color,i,i,true,false));
+	            	}
+	            }
+	        }
+
+	        // remove duplicates in comboList
+	        let noDupes: any[] = [];
+
+	        // convert array to json
+	        // check if stringified value is in mapped array
+	        for (let combo of comboList) {
+	        	if (noDupes.map((value) => {return JSON.stringify(value)}).indexOf(JSON.stringify(combo)) == -1) {
+	        		noDupes.push(combo);
+	        	}
+	        }
+
+	        console.log("combo list:",noDupes);
+
+	        // generate combos baseed on comboList
+
+	    }
 	}
 
-	// abandoned due to logic wall...will do brute force instead
+/*	// abandoned due to logic wall...will do brute force instead
 	estimateMultiplier(team: Team) {
 		// combine all awakenings into one array
 		let combinedTeamAwakenings: number[] = [];
@@ -299,7 +347,7 @@ export class LeaderSkillComponent {
 
 			}
 		});
-	}
+	}*/
 
 
 	initialize() {
@@ -309,7 +357,7 @@ export class LeaderSkillComponent {
                 	this.team = response;
                 	this.getMoreInfo(response);
                 	this.processLeaderSkill();
-                	this.estimateMultiplier(response);
+                	this.generateCobmoList(response);
                 	console.log("<leader-skill> updated", response);
                 },
                 function(error) {

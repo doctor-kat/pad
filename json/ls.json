@@ -1,0 +1,154 @@
+{
+	"Dark Athena": {
+		"name": "Guardian of the Imperial Capital, Athena",
+		"unconditional": [
+			["god", 1.5, 3.5, 1.0, 1.0],
+			["attacker", 1.5, 3.5, 1.0, 1.0],
+			["devil", 1.5, 3.5, 1.0, 1.0]
+		],
+		"unconditional": [
+			{
+				"type": ["god", "attacker", "devil"],
+				"multiplier": [1.5, 3.5, 1.0, 1.0]
+			}
+		],
+		"color match": {
+			"color": ["dark", "water"],
+			"multiplier": [1.0, 2.0, 2.0, 1.0]
+		}
+	},
+
+	"Aizen": {
+		"name": "Former Captain of Squad 5, Sosuke Aizen",
+		"unconditional": [
+			["dark", 1.0, 6.0, 1.0, 1.0],
+			["water", 1.0, 1.0, 2.0, 1.0]
+		],
+		"color cross": {
+			"color": ["dark"],
+			"multiplier": [1.0, 2.0, 1.0, 1.0]
+		}
+	},
+
+	"Juri": {
+		"name": "清杖の龍機博士, Juri",
+		"unconditional": [
+			["water", 1.5, 1.5, 1.0, 1.0],
+			["wood", 1.5, 1.5, 1.0, 1.0]
+		],
+		"color match": {
+			"color": ["water", "wood"],
+			"multiplier": [1.0, 5.0, 1.0, 0.75]
+		}
+	},
+
+	"Kushinada": {
+		"name": "Reincarnated Kushinadahime",
+		"unconditional": [
+			["healer", 1.5, 1.5, 1.0, 1.0]
+		],
+		"combo count": {
+			"multiplier": [
+				[5, 1.0, 2.0, 1.0, 1.0],
+				[10, 1.0, 12.0, 1.0, 1.0]
+			]
+		},
+		"special": "No skyfall"
+	}, 
+
+	"Ra Dragon": {
+		"name": "Almighty God, Ra Dragon",
+		"unconditional": [
+			["god", 1.5, 1.5, 1.5, 1.0]
+		],
+		"flex match": {
+			"color": ["fire","water","wood","light","dark","heart"],
+			"multiplier": [
+				[4, 1.0, 2.0, 1.0, 1.0],
+				[6, 1.0, 8.0, 1.0, 1.0]
+			]
+		}
+	},
+
+	"Myr": {
+		"name": "Star Cutting Time Dragonbound, Myr",
+		"heart cross": 	{
+			"multiplier": [1.0, 7.7, 1.0, 0.5]
+		},
+		"special": "Increased time limit of orb movement by 2 seconds"
+	},
+	
+	"Anubis": {
+		"name": "Reincarnated Anubis",
+		"combo count": {
+			"multiplier": [
+				[8, 1.0, 5.0, 1.0, 1.0],
+				[10, 1.0, 10.0, 1.0, 1.0]
+			]
+		},
+		"skill use": [1.0, 3.0, 1.5, 1.0]
+	},
+
+	"Uruka": {
+		"name": "冥星の喜女神, Uruka",
+		"color match": {
+			"color": ["fire","water","wood","dark","heart"],
+			"multiplier": [1.0, 6.5, 2.0, 1.0]
+		},
+		"special": "7x6 board size"
+	},
+
+	"Astaroth": {
+		"name": "Reincarnated Astaroth",
+		"unconditional": [
+			["healer", 2.0, 2.0, 1.0, 1.0],
+			["devil", 2.0, 2.0, 1.0, 1.0]
+		],
+		"connected orbs": {
+			"color": ["wood"],
+			"multiplier": [
+				[6, 1.0, 3.0, 1.0, 1.0],
+				[8, 1.0, 4.0, 1.0, 1.0]
+			]
+		}
+	},
+
+	"Ronove": {
+		"name": "Bursting Great Earl of Hell, Ronove",
+		"flex match": {
+			"color": ["fire", "water", "wood", "light", "dark"],
+			"multiplier": [
+				[3, 1.0, 2.5, 1.0, 1.0],
+				[4, 1.0, 3.0, 1.0, 1.0]
+			]
+		},
+		"heart cross": 	{
+			"multiplier": [1.0, 4.0, 1.0, 0.65]
+		}
+	},
+
+	"Ilmina": {
+		"name": "救書の灰幻魔, Ilmina",
+		"unconditional": [1.0, 4.5, 1.0, 1.0],
+		"color match": {
+			"color": ["light", "fire"],
+			"multiplier": [1.0, 1.0, 1.0, 0.75]
+		},
+		"special": "7x6 board size"
+	},
+
+	"Meri": {
+		"name": "浄弓の鋼星神, Meridionalis",
+		"unconditional": [
+			["water", 1.0, 2.5, 2.5, 1.0]
+		],
+		"connected orbs": {
+			"color": ["water"],
+			"multiplier": [
+				[6, 1.0, 3.0, 1.0, 1.0],
+				[9, 1.0, 4.5, 1.0, 1.0]
+			]
+		},
+		"special": "No skyfall matches"
+	}
+}

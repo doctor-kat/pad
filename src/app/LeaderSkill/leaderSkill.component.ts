@@ -11,8 +11,6 @@ import { Monster }			from '../shared/monster';
 import { Team }             from '../shared/team';
 import { Combo }            from '../shared/combo';
 
-
-
 enum Attribute {
 	fire = 0,
 	water,
@@ -128,6 +126,16 @@ export class LeaderSkillComponent {
 	}
 
 	generateCobmoList(team: Team) {
+		/*
+		TERMINOLOGY
+		
+		orb - a single orb
+		combo - a set of 3 or more connected orbs
+		combo set - a set of combos
+
+		*/
+
+
 		if (team.leader && team.friend_leader) {
 
 		    console.log("Generating combo list for",team.leader.name);
@@ -141,19 +149,19 @@ export class LeaderSkillComponent {
 
 			let comboList: Combo[] = [];
 
+			// add a 3-orb 1c for each attribute
 			for (let attribute in ["fire","water","wood","light","dark"]) {
 				comboList.push(new Combo(Attribute[attribute],3,3,false,false));
 			}
 
-			// tpaTeam?
+			// if there are tpas, add a 4-orb 1c of primary attribute
 		    ["leader", "sub1", "sub2", "sub3", "sub4", "friend_leader"].forEach((slot,i) => {
     	        if (team[slot] != undefined && team[slot].awoken_skills.includes(27)) {
     	        	comboList.push(new Combo(Attribute[team[slot].element],4,4,false,false));
     	        }
     	    });
 
-			// rowTeam > 5 rows
-            
+			// rowTeam > 5 rows           
 	        if (currentLS['color cross'] != undefined) {
 	            // consider 1, 2 and 3 cross
 				for (let color of currentLS['color cross'].color) {
@@ -188,14 +196,160 @@ export class LeaderSkillComponent {
 	        	}
 	        }
 
+	        noDupes.push(new Combo("fire",6,6,true,false));
 	        console.log("combo list:",noDupes);
 
-	        // generate combos baseed on comboList
 
+	        // generate combos based on comboList
+	        let combinations = this.generateCombinations(noDupes);
+	        console.log(combinations);
+
+	        console.log("combo for damage calc:", "[0, 0, 0, 0, 0, 0, 1]");
+	        this.calculateDamage(team, [0, 0, 0, 0, 0, 0, 1], noDupes)
 	    }
 	}
 
-/*	// abandoned due to logic wall...will do brute force instead
+    getComboSetSize(indexArray: number[], uniqueComboList: Combo[]) {
+        let size = 0;
+
+        indexArray.forEach((count,index) => {
+			size += (uniqueComboList[index].size)*count;
+        })
+     
+        return size;
+    };
+
+    generateCombinations(uniqueComboList: Combo[]) {
+        let output:any = [];
+
+        let indexArray:number[] = [];
+        for (let combo in uniqueComboList) {
+        	indexArray[combo] = 0;
+        }
+        
+        // console.log(indexArray);
+
+        let fn = (curr:any) => {
+            if ((curr) && (this.getComboSetSize(curr, uniqueComboList) > 14)) {
+                return; // exit loop
+            } else {
+                // console.log("curr:",curr);
+                output.push(curr);
+                
+                indexArray.forEach((count,index) => {
+                    let copy = curr.slice();
+                    copy[index] += 1;
+                    fn(copy);
+                })
+            }
+        }
+
+        fn(indexArray);
+
+        return output;
+    };
+
+    calculateDamage(team:any, indexArray: number[], uniqueComboList: Combo[]) {
+    	let output:number[][] = [];
+    	let slots:string[] = ["leader", "sub1", "sub2", "sub3", "sub4", "friend_leader"];
+
+    	// gather awakenings - rewrite this section
+		let teamAwakenings: number[] = [];
+
+		slots.forEach((slot,i) => {
+			output[i] = [0, 0];
+
+			if (team[slot] != undefined && team[slot].hasOwnProperty("awoken_skills")) {
+				team[slot].awoken_skills.forEach((awakening: number, j: number) => {
+					if (team[slot].awakening > j) {
+						teamAwakenings.push(team[slot].awoken_skills[j]);
+					}
+				});
+			}
+		});
+
+		// console.log("group 0");
+		// console.table(output);
+
+    	// group 1 & 2 - base & tpa
+    	slots.forEach((slot,slotIndex) => {
+    		let monster:Monster = team[slot];
+    		let monsterTPA:number = 0;
+
+    		// console.log("indexArray",indexArray)
+    		indexArray.forEach((count,index) => {
+    			let combo: Combo = uniqueComboList[index];
+    			if (count > 0) {
+
+    				// group 2 - tpa
+	    			if (combo.size == 4) {
+	    				// console.log("tpa bonus", combo, combo.size);
+	    				monsterTPA = monster.awoken_skills.slice(0,monster.awakening).filter(element => {return element == 27 }).length;
+	    			} else {
+	    				 monsterTPA = 0;
+	    			}
+
+	    			// main attribute - group 1
+	    			if (Attribute[monster.element] == combo.color) {
+						let teamOEA:number = teamAwakenings.filter(element => {return element == monster.element+13}).length;
+						let elemX = 1.00;
+	    				
+	    				output[slotIndex][0] += count * Math.ceil((Math.ceil((elemX * monster.atk) * (1.00 + combo.noOfEnhances * 0.06) * (1.00 + teamOEA * 0.05))) * Math.pow(1.5,monsterTPA));
+	    			}
+
+	    			// sub-attribute - group 1
+	    			if (Attribute[monster.element2] == combo.color) {
+						let teamOEA:number = teamAwakenings.filter(element => {return element == monster.element2+13}).length;
+
+						if (monster.element == monster.element2) {
+							let elemX = 0.10;
+						} else { let elemX = 0.30 }
+
+	    				output[slotIndex][1] += count * Math.ceil((Math.ceil((elemX * monster.atk) * (1.00 + combo.noOfEnhances * 0.06) * (1.00 + teamOEA * 0.05))) * Math.pow(1.5,monsterTPA));
+	    			}
+
+	    		}
+    		}
+    	});
+
+		// console.log("group 1 & 2");
+    	console.table(output);
+
+    	// group 3 - row enhance + board
+    	let rowCount:number[] = [0, 0, 0, 0, 0];
+
+/*
+    	for (let att in Attribute) {
+    		if (!isNaN(Number(att))) {
+
+    		}
+    	}
+*/
+
+		indexArray.forEach((count,index) => {
+			let combo: Combo = uniqueComboList[index];
+
+			if (combo.row) {
+				// increment rowCount[Attribute[combo.color]]
+			}
+		});
+
+
+    	console.log("row count RBGLD:", rowCount);
+
+    	// loop thru each sub and do multiplier on output based on sub element/element2
+
+    	slots.forEach((slot,slotIndex) => {
+    		let monster:Monster = team[slot];
+			let teamRows:number = teamAwakenings.filter(element => {return element == monster.element+21}).length;
+
+    	})
+
+    	// group 4 - check leader skill
+
+    }
+
+	// abandoned due to logic wall...will do brute force instead
 	estimateMultiplier(team: Team) {
 		// combine all awakenings into one array
 		let combinedTeamAwakenings: number[] = [];
@@ -289,65 +443,6 @@ export class LeaderSkillComponent {
 		// else ...
 			// calculate 1c of each attribute, apply conditional multipliers, 1 2 and 3 rows
 	}
-
-	calculateMultiplierFromComboSet(team: Team, comboSet: ComboSet) {
-
-	}
-
-	calculateMultipliers(team: Team) {
-		if (leader_skill['conditional'] != undefined) {
-            // if unconditional array has colors with attack multiplier
-            // add 1c, 2c, 3c combinations for those colors
-            // example: blue, dark
-            // return: [blue], [blue, blue], [blue, blue, blue]
-            // [dark], [blue, dark], [blue, dark tpa], [dark tpa, blue]
-        }
-        
-        if (leader_skill['color match'] != undefined) {
-            // consider minimum activation, then add 1c 2c main attribute and sub attribute
-        }
-        
-        if (leader_skill['color cross'] != undefined) {
-            // consider 1, 2 and 3 cross
-        }
-        
-        if (leader_skill['combo count'] != undefined) {
-            // consider range of combo count
-        }
-        
-        if (leader_skill['flex match'] != undefined) {
-            // -_-
-        }
-        
-        if (leader_skill['heart cross'] != undefined) {
-            // consider with and without heart cross
-        }
-        
-        if (leader_skill['connected orbs'] != undefined) {
-            // consider range of connected orbs
-        }
-	}
-
-
-	getMultiplierCombinations(team: Team) {
-		["leader", "friend_leader"].forEach((slot,i) => {
-			if (team[slot] != undefined && team[slot].hasOwnProperty("leader_skill_desc")) {
-				let leader_skill = this.ls[slot]; // fix typing of slot
-				if (leader_skill['conditional'] != undefined) {
-
-		        }
-		        
-		        // color match, heart cross
-		        
-		        if (leader_skill['color cross'] != undefined) {
-
-		        }
-		        
-		        // combo count, flex match, connected orbs
-
-			}
-		});
-	}*/
 
 
 	initialize() {

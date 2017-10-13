@@ -1,13 +1,16 @@
+// use interface instead?
+
 export class Combo {
-  color: String;
-  length: Number;
-  noOfEnhances: Number;
-  row: Boolean;
-  cross: Boolean;
-  
-  constructor(color: String, length: Number, noOfEnhances: Number, row: Boolean = false, cross: Boolean = false) {
+  color: string;
+  size: number;
+  noOfEnhances: number;
+  row: boolean;
+  cross: boolean;
+  count: number = 0;
+
+  constructor(color: string, size: number, noOfEnhances: number, row: boolean = false, cross: boolean = false) {
     this.color = color;
-    this.length = length;
+    this.size = size;
     this.noOfEnhances = noOfEnhances;
     this.row = row;
     this.cross = cross;

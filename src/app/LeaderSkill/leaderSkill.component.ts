@@ -64,6 +64,9 @@ export class LeaderSkillComponent {
 	team: Team;
 	attributeWeight: number[];
 	primaryAttributeIndex: number;
+	comboList: Combo[][] = [];
+	damageList: number[][][] = [];
+
 	// console.log(this.teamService.team);
 
 	getSampleData() {
@@ -196,16 +199,17 @@ export class LeaderSkillComponent {
 	        	}
 	        }
 
-	        noDupes.push(new Combo("fire",6,6,true,false));
 	        console.log("combo list:",noDupes);
-
 
 	        // generate combos based on comboList
 	        let combinations = this.generateCombinations(noDupes);
-	        console.log(combinations);
+	        // console.log(combinations);
 
-	        console.log("combo for damage calc:", "[0, 0, 0, 0, 0, 0, 1]");
-	        this.calculateDamage(team, [0, 0, 0, 0, 0, 0, 1], noDupes)
+	        // console.log("combo for damage calc:", "[0, 0, 0, 0, 0, 0, 5]");
+	        for (let combination of combinations) {
+	        	console.log("combination:",combination)
+	        	this.calculateDamage(team, combination, noDupes);
+	        }
 	    }
 	}
 
@@ -230,7 +234,7 @@ export class LeaderSkillComponent {
         // console.log(indexArray);
 
         let fn = (curr:any) => {
-            if ((curr) && (this.getComboSetSize(curr, uniqueComboList) > 14)) {
+            if ((curr) && (this.getComboSetSize(curr, uniqueComboList) > 10)) {
                 return; // exit loop
             } else {
                 // console.log("curr:",curr);
@@ -300,53 +304,79 @@ export class LeaderSkillComponent {
 	    			// sub-attribute - group 1
 	    			if (Attribute[monster.element2] == combo.color) {
 						let teamOEA:number = teamAwakenings.filter(element => {return element == monster.element2+13}).length;
+						let elemX = 0.30;
 
-						if (monster.element == monster.element2) {
-							let elemX = 0.10;
-						} else { let elemX = 0.30 }
+						if (monster.element == monster.element2) { let elemX = 0.10; }
 
 	    				output[slotIndex][1] += count * Math.ceil((Math.ceil((elemX * monster.atk) * (1.00 + combo.noOfEnhances * 0.06) * (1.00 + teamOEA * 0.05))) * Math.pow(1.5,monsterTPA));
 	    			}
 
 	    		}
-    		}
+    		});
     	});
 
 		// console.log("group 1 & 2");
-    	console.table(output);
+    	// console.table(output);
 
     	// group 3 - row enhance + board
     	let rowCount:number[] = [0, 0, 0, 0, 0];
 
-/*
-    	for (let att in Attribute) {
-    		if (!isNaN(Number(att))) {
-
-    		}
-    	}
-*/
-
+		// loop through each combo, counting number of rows of each attribute
 		indexArray.forEach((count,index) => {
 			let combo: Combo = uniqueComboList[index];
 
 			if (combo.row) {
-				// increment rowCount[Attribute[combo.color]]
+				rowCount[Attribute[combo.color]] += count;
 			}
 		});
-
 
     	console.log("row count RBGLD:", rowCount);
 
     	// loop thru each sub and do multiplier on output based on sub element/element2
-
     	slots.forEach((slot,slotIndex) => {
     		let monster:Monster = team[slot];
-			let teamRows:number = teamAwakenings.filter(element => {return element == monster.element+21}).length;
+			
 
+			// primary attribute (always)
+    		if (monster.element != null) {
+				let teamRows:number = teamAwakenings.filter(element => {return element == monster.element+21}).length;
+
+				// console.log("number of rows made",rowCount[monster.element]);
+				// console.log("number of row awakenings",teamRows);
+				let rowX = 1.00 + (0.10 * rowCount[monster.element] * teamRows);
+
+				output[slotIndex][0] *= rowX;    			
+    		}
+
+			// sub-attribute
+			if (monster.element2 != null) {
+				let teamRows:number = teamAwakenings.filter(element => {return element == monster.element2+21}).length;
+
+				let rowX = 1.00 + (0.10 * rowCount[monster.element2] * teamRows);
+
+				output[slotIndex][1] *= rowX;
+			};
     	})
+
+    	console.table(output);
 
     	// group 4 - check leader skill
 
+    	// console.log("this.damageList", this.damageList)
+    	this.damageList.push(output);
+    	
+    	let newCombo: Combo[] = [];
+
+    	indexArray.forEach((count,index) => {
+    		if (count > 0) {
+	    		let currentCombo: Combo = uniqueComboList[index];
+	    		for (let i=0; i<count; i++) {
+	    			newCombo.push(currentCombo);
+	    		}
+    		}
+    	});
+
+    	this.comboList.push(newCombo);
     }
 
 	// abandoned due to logic wall...will do brute force instead
@@ -452,8 +482,8 @@ export class LeaderSkillComponent {
                 	this.team = response;
                 	this.getMoreInfo(response);
                 	this.processLeaderSkill();
-                	this.generateCobmoList(response);
                 	console.log("<leader-skill> updated", response);
+                	this.generateCobmoList(this.team);
                 },
                 function(error) {
                     console.log("Error happened: " + error)

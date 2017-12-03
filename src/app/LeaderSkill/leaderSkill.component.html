@@ -1,4 +1,43 @@
-<div class="container">
+<div *ngIf="team.leader?.name">
+    <ul class="list-group" *ngFor="let comboSet of comboList;let i = index">
+
+        <span *ngFor="let combo of comboSet">
+            <button type="button" class="btn">{{ combo.color }} <span class="badge">{{ combo.size }}</span></button>
+        </span>
+
+        <table class="table">
+            <tr>
+            </tr>
+            <tr>
+                <th>Leader</th>
+                <th>Sub1</th>
+                <th>Sub2</th>
+                <th>Sub3</th>
+                <th>Sub4</th>
+                <th>Friend</th>
+            </tr>
+            <tr>
+                <td>{{ damageList[i][0][0] }}</td>
+                <td>{{ damageList[i][1][0] }}</td>
+                <td>{{ damageList[i][2][0] }}</td>
+                <td>{{ damageList[i][3][0] }}</td>
+                <td>{{ damageList[i][4][0] }}</td>
+                <td>{{ damageList[i][5][0] }}</td>
+            </tr>
+            <tr>
+                <td>{{ damageList[i][0][1] }}</td>
+                <td>{{ damageList[i][1][1] }}</td>
+                <td>{{ damageList[i][2][1] }}</td>
+                <td>{{ damageList[i][3][1] }}</td>
+                <td>{{ damageList[i][4][1] }}</td>
+                <td>{{ damageList[i][5][1] }}</td>
+            </tr>
+        </table>
+    </ul>
+</div>
+
+
+<!-- <div class="container">
   <div class="btn-group" role="group">
     <button type="button" class="btn btn-default">
       {{ attributeWeight[0] }} Fire <span class="glyphicon glyphicon-glyphicon glyphicon-fire"></span>
@@ -20,14 +59,13 @@
   </button>
   </div>
 
-  <div class="row"><br></div>
+  <div class="row"><br></div> -->
 
 
-<div *ngIf="team.leader?.name">
+<!-- <div *ngIf="team.leader?.name">
     <ul class="list-group" *ngFor="let leader of ls | keys">
         <li class="list-group-item active">{{ team[leader].name }}</li>
         <li class="list-group-item" *ngFor="let key of ls[leader] | keys">
-            <!-- {{ key }} : {{ ls[leader][key] | json }} -->
             
             <div *ngIf="key == 'unconditional'">
                 <div class="btn-toolbar" role="toolbar" *ngFor="let c of ls[leader][key]">
@@ -122,4 +160,4 @@
         </li>
     </ul>
 </div>
-</div>
+</div> -->

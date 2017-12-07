@@ -60,12 +60,21 @@ enum Awakening {
 export class LeaderSkillComponent {
 	constructor(private InterpretService: InterpretService, private DataService: DataService, private DictionaryService: DictionaryService, private teamService: TeamService) {};
 	dictionary = this.DictionaryService.getDictionary();
+	teamSlots = ['leader','sub1','sub2','sub3','sub4','friend_leader']
 	ls = {};
 	team: Team;
 	attributeWeight: number[];
 	primaryAttributeIndex: number;
 	comboList: Combo[][] = [];
 	damageList: number[][][] = [];
+	icon = {
+		"fire": "fire",
+		"water": "tint",
+		"wood": "leaf",
+		"light": "asterisk",
+		"dark": "eye-close",
+		"heart": "heart"
+	}
 
 	// console.log(this.teamService.team);
 
@@ -348,7 +357,7 @@ export class LeaderSkillComponent {
 				output[slotIndex][0] *= rowX;    			
     		}
 
-			// sub-attribute
+			// sub-attributef
 			if (monster.element2 != null) {
 				let teamRows:number = teamAwakenings.filter(element => {return element == monster.element2+21}).length;
 

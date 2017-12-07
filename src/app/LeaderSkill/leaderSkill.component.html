@@ -1,37 +1,33 @@
 <div *ngIf="team.leader?.name">
-    <ul class="list-group" *ngFor="let comboSet of comboList;let i = index">
+    <ul class="list-group">
 
-        <span *ngFor="let combo of comboSet">
-            <button type="button" class="btn">{{ combo.color }} <span class="badge">{{ combo.size }}</span></button>
-        </span>
-
-        <table class="table">
-            <tr>
-            </tr>
-            <tr>
-                <th>Leader</th>
-                <th>Sub1</th>
-                <th>Sub2</th>
-                <th>Sub3</th>
-                <th>Sub4</th>
-                <th>Friend</th>
-            </tr>
-            <tr>
-                <td>{{ damageList[i][0][0] }}</td>
-                <td>{{ damageList[i][1][0] }}</td>
-                <td>{{ damageList[i][2][0] }}</td>
-                <td>{{ damageList[i][3][0] }}</td>
-                <td>{{ damageList[i][4][0] }}</td>
-                <td>{{ damageList[i][5][0] }}</td>
-            </tr>
-            <tr>
-                <td>{{ damageList[i][0][1] }}</td>
-                <td>{{ damageList[i][1][1] }}</td>
-                <td>{{ damageList[i][2][1] }}</td>
-                <td>{{ damageList[i][3][1] }}</td>
-                <td>{{ damageList[i][4][1] }}</td>
-                <td>{{ damageList[i][5][1] }}</td>
-            </tr>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col" class="col-md-2">Combo</th>
+                    <th scope="col" class="col-md-1">Leader</th>
+                    <th scope="col" class="col-md-1">Sub1</th>
+                    <th scope="col" class="col-md-1">Sub2</th>
+                    <th scope="col" class="col-md-1">Sub3</th>
+                    <th scope="col" class="col-md-1">Sub4</th>
+                    <th scope="col" class="col-md-1">Friend</th>
+                </tr>
+            </thead>
+            <tbody style="height:200px;">
+                <tr *ngFor="let comboSet of comboList;let i = index">
+                    <td rowspawn="3">
+                        <span *ngFor="let combo of comboSet">
+                            <button type="button" class="btn btn-round"><span class="glyphicon glyphicon-glyphicon glyphicon-{{ icon[combo.color] }}"></span> <span class="badge">{{ combo.size }}</span></button>
+                        </span>
+                    </td>
+                    <td>{{ damageList[i][0][0] }}<br>{{ damageList[i][0][1] }}</td>
+                    <td>{{ damageList[i][1][0] }}<br>{{ damageList[i][1][1] }}</td>
+                    <td>{{ damageList[i][2][0] }}<br>{{ damageList[i][2][1] }}</td>
+                    <td>{{ damageList[i][3][0] }}<br>{{ damageList[i][3][1] }}</td>
+                    <td>{{ damageList[i][4][0] }}<br>{{ damageList[i][4][1] }}</td>
+                    <td>{{ damageList[i][5][0] }}<br>{{ damageList[i][5][1] }}</td>
+                </tr>
+            </tbody>
         </table>
     </ul>
 </div>

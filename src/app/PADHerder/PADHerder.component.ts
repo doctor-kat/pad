@@ -13,18 +13,20 @@ import { Team }             from '../shared/team';
     moduleId: module.id,
     selector: 'pad-herder',
     templateUrl: './PADHerder.component.html',
-    providers: [ PADHerderService ]
+    providers: [ PADHerderService ],
+    styleUrls: ['./sprite.css']
 })
 
 export class PADHerderComponent {
     constructor(private PADHerderService: PADHerderService, public teamService: TeamService) {}
 
     title = 'PADHerder App';
-    padh_team_id = '104973';
+    padh_team_id = '278440';
     PADHerder_Team = {};
     team = new Team;
     ls_db = [{}];
     monster_db = [{}];
+    teamSlots = ['leader','sub1','sub2','sub3','sub4','friend_leader'];
 
     getTeam(padh_team_id: string) {
         // console.log("getting team");

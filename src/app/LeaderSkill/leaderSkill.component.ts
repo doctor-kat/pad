@@ -74,7 +74,15 @@ export class LeaderSkillComponent {
 		"light": "asterisk",
 		"dark": "eye-close",
 		"heart": "heart"
-	}
+	};
+	badge = {
+		"fire": "danger",
+		"water": "primary",
+		"wood": "success",
+		"light": "warning",
+		"dark": "dark",
+		"heart": "secondary"
+	};
 
 	// console.log(this.teamService.team);
 

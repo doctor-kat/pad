@@ -1,6 +1,7 @@
 <style>
     table {
         table-layout: fixed;
+        font-size:0.75em;
     }
     th, td {
         text-align: center !important;
@@ -8,8 +9,8 @@
     }    
 </style>
 
-<div class="col-md-12" *ngIf="team.leader?.name">
-    <table class="table table-bordered">
+<div class="col-md-10" style="margin:auto;" *ngIf="team.leader?.name">
+    <table class="table table-bordered table-sm">
         <thead class="thead-light">
             <tr>
                 <th scope="col">Combo</th>
@@ -19,148 +20,24 @@
                 <th scope="col">Sub3</th>
                 <th scope="col">Sub4</th>
                 <th scope="col">Friend</th>
+                <th scope="col">Total</th>
             </tr>
         </thead>
         <tbody style="height:200px;">
             <tr *ngFor="let comboSet of comboList;let i = index">
-                <td rowspawn="3">
+                <td id="combo" rowspawn="3">
                     <span *ngFor="let combo of comboSet">
                         <span class="badge badge-pill badge-{{ badge[combo.color] }}">{{ combo.size }}</span>
                     </span>
                 </td>
-                <td>{{ damageList[i][0][0] }}<br>{{ damageList[i][0][1] }}</td>
-                <td>{{ damageList[i][1][0] }}<br>{{ damageList[i][1][1] }}</td>
-                <td>{{ damageList[i][2][0] }}<br>{{ damageList[i][2][1] }}</td>
-                <td>{{ damageList[i][3][0] }}<br>{{ damageList[i][3][1] }}</td>
-                <td>{{ damageList[i][4][0] }}<br>{{ damageList[i][4][1] }}</td>
-                <td>{{ damageList[i][5][0] }}<br>{{ damageList[i][5][1] }}</td>
+
+                <td id="damage" *ngFor="let p of teamSlots;let j = index">
+                    {{ damageList[i][j][0] }}<br>{{ damageList[i][j][1] }}
+                </td>
+                
+                <td id="total">
+                </td>
             </tr>
         </tbody>
     </table>
 </div>
-
-
-<!-- <div class="container">
-  <div class="btn-group" role="group">
-    <button type="button" class="btn btn-default">
-      {{ attributeWeight[0] }} Fire <span class="glyphicon glyphicon-glyphicon glyphicon-fire"></span>
-    </button>
-    <button type="button" class="btn btn-default">  
-      {{ attributeWeight[1] }} Water <span class="glyphicon glyphicon-glyphicon glyphicon-tint"></span>
-    </button>
-    <button type="button" class="btn btn-default">  
-      {{ attributeWeight[2] }} Wood <span class="glyphicon glyphicon-glyphicon glyphicon-leaf"></span>
-    </button>
-    <button type="button" class="btn btn-default">  
-      {{ attributeWeight[3] }} Light <span class="glyphicon glyphicon-glyphicon glyphicon-asterisk"></span>
-    </button>
-    <button type="button" class="btn btn-default">  
-      {{ attributeWeight[4] }} Dark <span class="glyphicon glyphicon-glyphicon glyphicon-eye-close"></span>
-    </button>
-    <button type="button" class="btn btn-default">  
-      Heart <span class="glyphicon glyphicon-glyphicon glyphicon-heart-empty"></span>
-  </button>
-  </div>
-
-  <div class="row"><br></div> -->
-
-
-<!-- <div *ngIf="team.leader?.name">
-    <ul class="list-group" *ngFor="let leader of ls | keys">
-        <li class="list-group-item active">{{ team[leader].name }}</li>
-        <li class="list-group-item" *ngFor="let key of ls[leader] | keys">
-            
-            <div *ngIf="key == 'unconditional'">
-                <div class="btn-toolbar" role="toolbar" *ngFor="let c of ls[leader][key]">
-                    <div class="btn-group btn-group-xs" role="group">
-                        <button type="button" class="btn btn-default">
-                            {{ key }}
-                        </button>
-                    </div>
-                    <div class="btn-group btn-group-xs" role="group">
-                        <button type="button" class="btn btn-default" *ngFor="let att_type of c['att_type']">
-                            {{ att_type }}
-                        </button>
-                    </div>
-                    <div class="btn-group btn-group-xs" role="group">
-                        <div class="btn btn-default" role="group" *ngFor="let x of c['multiplier']">
-                            {{ x }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div *ngIf="dictionary.values['standard'].test(key)">
-                <div class="btn-toolbar" role="toolbar">
-                    <div class="btn-group btn-group-xs" role="group">
-                        <button type="button" class="btn btn-default">
-                            {{ key }}
-                        </button>
-                    </div>
-                    <div class="btn-group btn-group-xs" role="group">
-                        <button type="button" class="btn btn-default" *ngFor="let att of ls[leader][key]['color']">
-                            {{ att }}
-                        </button>
-                    </div>
-                    <div class="btn-group btn-group-xs" role="group">
-                        <div class="btn btn-default" role="group" *ngFor="let x of ls[leader][key]['multiplier']">
-                            {{ x }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div *ngIf="dictionary.values['scaling'].test(key)">
-                <div class="btn-toolbar" role="toolbar">
-                    <div class="btn-group btn-group-xs" role="group">
-                        <button type="button" class="btn btn-default">
-                            {{ key }}
-                        </button>
-                    </div>
-                    <div class="btn-group btn-group-xs" role="group">
-                        <button type="button" class="btn btn-default" *ngFor="let att of ls[leader][key]['color']">
-                            {{ att }}
-                        </button>
-                    </div>
-                    <div class="btn-group btn-group-xs" role="group" *ngFor="let x of ls[leader][key]['multiplier']">
-                        <div class="btn btn-default" role="group" *ngFor="let stat of x">
-                            {{ stat }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div *ngIf="dictionary.values['combo count'].test(key)">
-                <div class="btn-toolbar" role="toolbar">
-                    <div class="btn-group btn-group-xs" role="group">
-                        <button type="button" class="btn btn-default">
-                            {{ key }}
-                        </button>
-                    </div>
-                    <div class="btn-group btn-group-xs" role="group" *ngFor="let x of ls[leader][key]['multiplier']">
-                        <div class="btn btn-default" role="group" *ngFor="let stat of x">
-                            {{ stat }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div *ngIf="dictionary.values['special'].test(key)">
-                <div class="btn-toolbar" role="toolbar">
-                    <div class="btn-group btn-group-xs" role="group">
-                        <button type="button" class="btn btn-default">
-                            {{ key }}
-                        </button>
-                    </div>
-                    <div class="btn-group btn-group-xs" role="group">
-                        <button type="button" class="btn btn-default">
-                            {{ ls[leader][key] }}
-                        </button>
-                    </div>
-                </div>
-            </div>        
-            
-        </li>
-    </ul>
-</div>
-</div> -->

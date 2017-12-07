@@ -1,4 +1,4 @@
-<div class="col-md-12">
+<div class="col-md-10" style="margin:auto;">
 	<div class="card">
 		<div class="card-title">
 			<div class="input-group">
@@ -31,6 +31,10 @@
 					text-align: center !important;
 					vertical-align: middle !important;
 				}
+				.card-footer {
+					text-align: center;
+					font-size: 0.6em;
+				}
 			</style>
 
 			<table class="table table-hover table-bordered table-sm" *ngIf="team.leader?.name">
@@ -56,7 +60,7 @@
 					</tr>
 					<tr>
 						<th scope="row">Name</th>
-						<td style="font-size: 0.8em" *ngFor="let p of teamSlots">{{ team[p].name }}</td>
+						<td style="font-size: 0.75em" *ngFor="let p of teamSlots">{{ team[p].name }}</td>
 					</tr>
 					<tr>
 						<th scope="row">Level</th>
@@ -86,11 +90,11 @@
 			</table>
 		</div><!-- /card-body -->
 		
-		<div *ngIf="team.name" class="card-footer" style="font-size:0.75em">
+		<div *ngIf="team.name" class="card-footer">
 			Leader: {{ team.leader?.leader_skill_desc }}
 		</div><!-- /card-footer -->
 
-		<div *ngIf="team.name" class="card-footer" style="font-size:0.75em">
+		<div *ngIf="team.name" class="card-footer">
 			Friend: {{ team.friend_leader?.leader_skill_desc }}
 		</div><!-- /card-footer -->
 

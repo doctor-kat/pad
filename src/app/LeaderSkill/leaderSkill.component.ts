@@ -222,9 +222,13 @@ export class LeaderSkillComponent {
 	        let combinations = this.generateCombinations(noDupes);
 	        // console.log(combinations);
 
+	        /* COMBO DATA SET */
+	        let lowerDataSet = 500;
+	        let upperDataSet = 520;
+
 	        // console.log("combo for damage calc:", "[0, 0, 0, 0, 0, 0, 5]");
-	        for (let combination of combinations) {
-	        	console.log("combination:",combination)
+	        for (let combination of combinations.slice(lowerDataSet,upperDataSet)) {
+	        	// console.log("combination:",combination)
 	        	this.calculateDamage(team, combination, noDupes);
 	        }
 	    }
@@ -250,8 +254,11 @@ export class LeaderSkillComponent {
         
         // console.log(indexArray);
 
+        /* SET MAXIMUM COMBO LENGTH */
+        let maxComboLength = 20;
+
         let fn = (curr:any) => {
-            if ((curr) && (this.getComboSetSize(curr, uniqueComboList) > 10)) {
+            if ((curr) && (this.getComboSetSize(curr, uniqueComboList) > maxComboLength)) {
                 return; // exit loop
             } else {
                 // console.log("curr:",curr);
@@ -274,7 +281,7 @@ export class LeaderSkillComponent {
     	let output:number[][] = [];
     	let slots:string[] = ["leader", "sub1", "sub2", "sub3", "sub4", "friend_leader"];
 
-    	// gather awakenings - rewrite this section
+    	// gather awakenings - rewrite this section later
 		let teamAwakenings: number[] = [];
 
 		slots.forEach((slot,i) => {
@@ -292,7 +299,9 @@ export class LeaderSkillComponent {
 		// console.log("group 0");
 		// console.table(output);
 
-    	// group 1 & 2 - base & tpa
+		////// ////// /////// ////// ////// //////
+    	//////   group 1 & 2 - base & tpa   //////
+
     	slots.forEach((slot,slotIndex) => {
     		let monster:Monster = team[slot];
     		let monsterTPA:number = 0;
@@ -307,12 +316,12 @@ export class LeaderSkillComponent {
 	    				// console.log("tpa bonus", combo, combo.size);
 	    				monsterTPA = monster.awoken_skills.slice(0,monster.awakening).filter(element => {return element == 27 }).length;
 	    			} else {
-	    				 monsterTPA = 0;
+	    				monsterTPA = 0;
 	    			}
 
 	    			// main attribute - group 1
 	    			if (Attribute[monster.element] == combo.color) {
-						let teamOEA:number = teamAwakenings.filter(element => {return element == monster.element+13}).length;
+						let teamOEA:number = teamAwakenings.filter(element => {return element == monster.element+14}).length;
 						let elemX = 1.00;
 	    				
 	    				output[slotIndex][0] += count * Math.ceil((Math.ceil((elemX * monster.atk) * (1.00 + combo.noOfEnhances * 0.06) * (1.00 + teamOEA * 0.05))) * Math.pow(1.5,monsterTPA));
@@ -320,7 +329,7 @@ export class LeaderSkillComponent {
 
 	    			// sub-attribute - group 1
 	    			if (Attribute[monster.element2] == combo.color) {
-						let teamOEA:number = teamAwakenings.filter(element => {return element == monster.element2+13}).length;
+						let teamOEA:number = teamAwakenings.filter(element => {return element == monster.element2+14}).length;
 						let elemX = 0.30;
 
 						if (monster.element == monster.element2) { let elemX = 0.10; }
@@ -332,10 +341,16 @@ export class LeaderSkillComponent {
     		});
     	});
 
-		// console.log("group 1 & 2");
+    	// console.table("group 1&2");
     	// console.table(output);
 
-    	// group 3 - row enhance + board
+    	////// //////   group 1 end  ////// //////
+    	////// ////// /////// ////// ////// //////
+
+
+    	////// ////// /////// ////// ////// //////
+    	////// group 3 - row enhance + board /////
+    	
     	let rowCount:number[] = [0, 0, 0, 0, 0];
 
 		// loop through each combo, counting number of rows of each attribute
@@ -347,13 +362,11 @@ export class LeaderSkillComponent {
 			}
 		});
 
-    	console.log("row count RBGLD:", rowCount);
-
-    	// loop thru each sub and do multiplier on output based on sub element/element2
+    	// multiply damage based on row enhances and number of combos
+    	let comboCount = indexArray.reduce((a, b) => a + b, 0);
     	slots.forEach((slot,slotIndex) => {
     		let monster:Monster = team[slot];
-			
-
+    		
 			// primary attribute (always)
     		if (monster.element != null) {
 				let teamRows:number = teamAwakenings.filter(element => {return element == monster.element+21}).length;
@@ -362,22 +375,91 @@ export class LeaderSkillComponent {
 				// console.log("number of row awakenings",teamRows);
 				let rowX = 1.00 + (0.10 * rowCount[monster.element] * teamRows);
 
-				output[slotIndex][0] *= rowX;    			
-    		}
+				let boardX = 1 + (0.25*(comboCount-1));
+				// console.log("number of combos:", indexArray.reduce((a, b) => a + b, 0));
+				// console.log("X:", boardX);
 
-			// sub-attributef
+				output[slotIndex][0] = Math.ceil(output[slotIndex][0] * rowX * boardX);
+    		};
+
+			// sub-attribute
 			if (monster.element2 != null) {
 				let teamRows:number = teamAwakenings.filter(element => {return element == monster.element2+21}).length;
 
 				let rowX = 1.00 + (0.10 * rowCount[monster.element2] * teamRows);
 
-				output[slotIndex][1] *= rowX;
+				let boardX = 1 + (0.25*(comboCount-1));
+
+				output[slotIndex][1] = Math.ceil(output[slotIndex][1] * rowX * boardX);
 			};
     	})
 
-    	console.table(output);
+    	// console.log("group 3");
+    	// console.table(output);
 
-    	// group 4 - check leader skill
+    	////// //////   group 3 end  ////// //////
+    	////// ////// /////// ////// ////// //////
+
+
+    	////// ////// /////// ////// ////// //////
+    	////// group 4 - check leader skill //////
+
+    	let leaderSkills = this.ls;
+    	let thisX = [1.00, 1.00, 1.00, 1.00];
+    	let lsX = [1.00, 1.00, 1.00, 1.00]
+    	let current:any;
+
+    	console.log("parsed leader skills",leaderSkills);
+
+        // "standard" : /color match|color cross|heart cross/i,
+        if (leaderSkills["leader"]["color match"]) {
+        	console.log("has color match")
+        }
+
+        if (leaderSkills["leader"]["color cross"]) {
+        	console.log("has color cross")
+        }
+		
+        if (leaderSkills["leader"]["heart cross"]) {
+        	console.log("has heart cross")
+        }
+
+		// "scaling" : /connected orbs|flex match/i,
+        
+        // "combo count" : /combo count/i,
+        if (leaderSkills["leader"]["combo count"]) {
+        	// console.log("has combo count")
+        	
+        	current = leaderSkills["leader"]["combo count"];
+
+        	if (comboCount < current.multiplier[0][0]) {
+        		// under lower limit then do nothing
+        	} else {
+        		let scalingX = (current.multiplier[1][2] - current.multiplier[0][2]) / (current.multiplier[1][0] - current.multiplier[0][0]);
+        		if (comboCount >= current.multiplier[1][0]) {
+        			// above upper limit then apply max
+        			thisX = current.multiplier[1].slice(1,4);
+        		} else {
+        			thisX[1] = current.multiplier[0][2] + ((comboCount - current.multiplier[0][0]) * scalingX);
+        		}
+        		
+        		// console.log("leaderX", thisX);
+
+				for (let x in lsX) {
+    				lsX[x] *= thisX[x];
+    			}
+        	}
+        } // combo count
+
+
+    	console.log("final multiplier",lsX)
+
+		////// //////   group 4 end  ////// //////
+    	////// ////// /////// ////// ////// //////
+
+
+		////// ////// /////// ////// ////// //////
+    	////// clean up - push damage calc  //////
 
     	// console.log("this.damageList", this.damageList)
     	this.damageList.push(output);
@@ -393,104 +475,12 @@ export class LeaderSkillComponent {
     		}
     	});
 
+    	console.log("newCombo", newCombo);
     	this.comboList.push(newCombo);
+
+		////// //////  clean up end  ////// //////
+    	////// ////// /////// ////// ////// //////
     }
-
-	// abandoned due to logic wall...will do brute force instead
-	estimateMultiplier(team: Team) {
-		// combine all awakenings into one array
-		let combinedTeamAwakenings: number[] = [];
-
-		["leader", "sub1", "sub2", "sub3", "sub4", "friend_leader"].forEach((slot,i) => {
-			if (team[slot] != undefined && team[slot].hasOwnProperty("awoken_skills")) {
-				team[slot].awoken_skills.forEach((awakening: number, j: number) => {
-					if (team[slot].awakening > j) {
-						combinedTeamAwakenings.push(team[slot].awoken_skills[j]);
-					}
-				});
-			}
-		});
-		
-		// console.log(combinedTeamAwakenings.filter(element => {return element == 27}).length); // awakening 27 is tpa
-		// fire oe 14, water 15, wood 16, light 17, dark 18
-
-
-
-		// get number of row awakenings
-
-
-		// if < 5 row awakenings
-			// calculate 1c of each attribute, and apply conditional multipliers
-			// group 1
-				// loop through subs
-				let teamDamage: number = 0;
-				["leader", "sub1", "sub2", "sub3", "sub4", "friend_leader"].forEach((slot,i) => {
-					if (team[slot] != undefined && team[slot].hasOwnProperty("atk")) {
-						if (team[slot].element == this.primaryAttributeIndex) {
-							// primary attribute
-							let mainOrSubMultiplier: number = 1.00;
-							let orbEnhanceAwakenings: number = combinedTeamAwakenings.filter(element => {return element == this.team[slot].element+13}).length;
-							let connectedOrbs: number = 3;
-
-							let enhancedOrbs:number = 0;
-							if (orbEnhanceAwakenings >= 5) {
-								enhancedOrbs = 3;
-							} else if (orbEnhanceAwakenings == 4) {
-								enhancedOrbs = 2;
-							} else if (orbEnhanceAwakenings >= 2) {
-								enhancedOrbs = 1;
-							}
-
-							// calculate group1 damage
-							let damage: number = team[slot].atk * mainOrSubMultiplier * (1.00 + enhancedOrbs*0.06) * (1.00 + (0.25 * (connectedOrbs-3)) * (1+ orbEnhanceAwakenings*0.05));
-							damage = Math.ceil(damage);
-							// apply conditional multpliers
-
-							teamDamage += damage;
-							console.log("primary attribute damage for",team[slot].name,damage);
-						}
-
-						if (team[slot].element2 == this.primaryAttributeIndex) {
-							// sub-attribute
-							let mainOrSubMultiplier: number = 0.3;
-							let orbEnhanceAwakenings: number = combinedTeamAwakenings.filter(element => {return element == this.team[slot].element2+13}).length;
-							let connectedOrbs: number = 3;
-
-							let enhancedOrbs:number = 0;
-							if (orbEnhanceAwakenings >= 5) {
-								enhancedOrbs = 3;
-							} else if (orbEnhanceAwakenings == 4) {
-								enhancedOrbs = 2;
-							} else if (orbEnhanceAwakenings >= 2) {
-								enhancedOrbs = 1;
-							}
-	
-							let damage = team[slot].atk * mainOrSubMultiplier * (1.00 + enhancedOrbs*0.06) * (1.00 + (0.25 * (connectedOrbs-3)) * (1+ orbEnhanceAwakenings*0.05));
-							damage = Math.ceil(damage);
-							teamDamage += damage;
-							console.log("sub-attribute damage for",team[slot].name,damage);
-						}
-
-						// assign damage target.  will convert to user input later
-						let target: number = 200000;
-
-						console.log("need multiplier of ",target/teamDamage,"for ",target);
-
-						// calculate number of combos needed based on polynomial approximation of 25% damage increase per combo
-						console.log("estimated number of combos: ", Math.floor((-0.0087*Math.pow(target/teamDamage,2))+(0.5192*target/teamDamage)+(0.6854)));
-
-					}
-
-				});
-
-
-
-
-			// group 2
-		// else ...
-			// calculate 1c of each attribute, apply conditional multipliers, 1 2 and 3 rows
-	}
-
 
 	initialize() {
 		this.teamService.subject

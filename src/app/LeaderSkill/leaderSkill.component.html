@@ -6,7 +6,10 @@
     th, td {
         text-align: center !important;
         vertical-align: middle !important;
-    }    
+    }
+    .badge-secondary {
+        background-color: #E7A1B0;
+    }
 </style>
 
 <div class="col-md-10" style="margin:auto;" *ngIf="team.leader?.name">
@@ -21,23 +24,46 @@
                 <th scope="col">Sub4</th>
                 <th scope="col">Friend</th>
                 <th scope="col">Total</th>
+                <th scope="col">Mutliplier</th>
+                <th scope="col">Length</th>
             </tr>
         </thead>
         <tbody style="height:200px;">
-            <tr *ngFor="let comboSet of comboList;let i = index">
-                <td id="combo" rowspawn="3">
-                    <span *ngFor="let combo of comboSet">
-                        <span class="badge badge-pill badge-{{ badge[combo.color] }}">{{ combo.size }}</span>
-                    </span>
-                </td>
+            <ng-container *ngFor="let dataSet of damageList;let i = index">
+                <tr>
+                    <td id="combo" rowspan="2">
+                        <span *ngFor="let combo of comboList[dataSet[8][0]]">
+                            <span class="badge badge-pill badge-{{ badge[combo.color] }}">{{ combo.size }}</span>
+                        </span>
+                    </td>
 
-                <td id="damage" *ngFor="let p of teamSlots;let j = index">
-                    {{ damageList[i][j][0] }}<br>{{ damageList[i][j][1] }}
-                </td>
-                
-                <td id="total">
-                </td>
-            </tr>
+                    <td id="damage" *ngFor="let p of teamSlots;let j = index">
+                        {{ damageList[i][j][0] | number }}
+                    </td>
+
+                    <td id="total">
+                        {{ damageList[i][6][0] | number }}
+                    </td>
+
+                    <td id="multiplier" rowspan="2">
+                        {{ damageList[i][7][1] }}x
+                    </td>
+
+                    <td id="Length" rowspan="2">
+                        {{ damageList[i][9][0] }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td id="damage" *ngFor="let p of teamSlots;let j = index">
+                        {{ damageList[i][j][1] | number }}
+                    </td>
+
+                    <td id="total">
+                        {{ damageList[i][6][1] | number }}
+                    </td>
+                </tr>
+            </ng-container>
         </tbody>
     </table>
 </div>

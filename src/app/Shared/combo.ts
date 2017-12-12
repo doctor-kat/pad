@@ -8,6 +8,7 @@ export class Combo {
   cross: boolean;
   count: number = 0;
   icon: string;
+  length: number;
 
   constructor(color: string, size: number, noOfEnhances: number, row: boolean = false, cross: boolean = false) {
     this.color = color;

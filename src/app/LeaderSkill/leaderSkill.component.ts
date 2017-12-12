@@ -152,27 +152,37 @@ export class LeaderSkillComponent {
 		orb - a single orb
 		combo - a set of 3 or more connected orbs
 		combo set - a set of combos
-
 		*/
 
 
 		if (team.leader && team.friend_leader) {
+			let comboList: Combo[] = [];
 
-		    console.log("Generating combo list for",team.leader.name);
+		    // console.log("Generating combo list for",team.leader.name);
 		    // primary attribute is Attribute[this.primaryAttributeIndex]
 
 
+			// add a 3-orb 1c for each available attribute
+		    	let elements:Set<Number> = new Set;
+			    for (let key in team) {
+			    	if (team[key].element != null) {
+			    		elements.add(team[key].element);
+			    	}
+
+					if (team[key].element2 != null) {
+			    		elements.add(team[key].element2);
+			    	}
+			    }
+			    // console.log("attributes unique", elements);
+
+			    elements.forEach((index:any) => {
+			    	comboList.push(new Combo(Attribute[index],3,0,false,false));
+			    });
 
 
-			let currentLS = this.ls['leader'];	    
-			// console.log("current ls",currentLS);
+			// add a heart/jammer match instead of each attribute
+			comboList.push(new Combo("heart",3,0,false,false));
 
-			let comboList: Combo[] = [];
-
-			// add a 3-orb 1c for each attribute
-			for (let attribute in ["fire","water","wood","light","dark"]) {
-				comboList.push(new Combo(Attribute[attribute],3,3,false,false));
-			}
 
 			// if there are tpas, add a 4-orb 1c of primary attribute
 		    ["leader", "sub1", "sub2", "sub3", "sub4", "friend_leader"].forEach((slot,i) => {
@@ -181,6 +191,8 @@ export class LeaderSkillComponent {
     	        }
     	    });
 
+			
+			let currentLS = this.ls['leader'];
 			// rowTeam > 5 rows           
 	        if (currentLS['color cross'] != undefined) {
 	            // consider 1, 2 and 3 cross
@@ -213,24 +225,53 @@ export class LeaderSkillComponent {
 	        for (let combo of comboList) {
 	        	if (noDupes.map((value) => {return JSON.stringify(value)}).indexOf(JSON.stringify(combo)) == -1) {
 	        		noDupes.push(combo);
+	        	} else {
+	        		// console.log(combo, " rejected");
 	        	}
 	        }
 
-	        console.log("combo list:",noDupes);
+	        // console.log("combo list:",noDupes);
 
 	        // generate combos based on comboList
 	        let combinations = this.generateCombinations(noDupes);
 	        // console.log(combinations);
 
 	        /* COMBO DATA SET */
-	        let lowerDataSet = 500;
-	        let upperDataSet = 520;
+	        let lowerDataSet = 1;
+	        let upperDataSet = 9000;
 
-	        // console.log("combo for damage calc:", "[0, 0, 0, 0, 0, 0, 5]");
 	        for (let combination of combinations.slice(lowerDataSet,upperDataSet)) {
+        	// for (let combination of combinations.slice(1)) {
 	        	// console.log("combination:",combination)
 	        	this.calculateDamage(team, combination, noDupes);
 	        }
+
+	        // filter array above certain damage limit
+	        /* TARGET DAMAGE */
+	        let targetDamage = 13114724*4;
+	        this.damageList = this.damageList.filter(set => {
+	        	return set[6][0] >= (targetDamage)
+	        });
+
+
+	        // sort array by ascending total damage
+	        this.damageList.sort((a,b) => {
+	        	// return b[6][0] - a[6][0]; // descending
+	        	return a[6][0] - b[6][0] // ascending
+	        });
+
+
+	        // sort array by ascending number of orbs
+/*	        this.damageList.sort((a,b) => {
+	        	return a[9][0] - b[9][0];
+	        });*/
+
+
+	        /* TOP # OF RESULTS TO SHOW */
+	        let numberOfResults = 30;
+	        this.damageList.splice(numberOfResults,this.damageList.length - numberOfResults);
+
+	        // console.log(this.damageList.map((a) => {return a[6][0]}));
 	    }
 	}
 
@@ -245,7 +286,7 @@ export class LeaderSkillComponent {
     };
 
     generateCombinations(uniqueComboList: Combo[]) {
-        let output:any = [];
+        let output = new Set;
 
         let indexArray:number[] = [];
         for (let combo in uniqueComboList) {
@@ -255,14 +296,15 @@ export class LeaderSkillComponent {
         // console.log(indexArray);
 
         /* SET MAXIMUM COMBO LENGTH */
-        let maxComboLength = 20;
+        let maxComboLength = 27;
 
+        // recursive function fn to generate combinations
         let fn = (curr:any) => {
             if ((curr) && (this.getComboSetSize(curr, uniqueComboList) > maxComboLength)) {
                 return; // exit loop
             } else {
                 // console.log("curr:",curr);
-                output.push(curr);
+                output.add(curr);
                 
                 indexArray.forEach((count,index) => {
                     let copy = curr.slice();
@@ -270,11 +312,12 @@ export class LeaderSkillComponent {
                     fn(copy);
                 })
             }
-        }
+        };
 
+        // initialize fn
         fn(indexArray);
 
-        return output;
+        return Array.from(output);
     };
 
     calculateDamage(team:any, indexArray: number[], uniqueComboList: Combo[]) {
@@ -336,7 +379,6 @@ export class LeaderSkillComponent {
 
 	    				output[slotIndex][1] += count * Math.ceil((Math.ceil((elemX * monster.atk) * (1.00 + combo.noOfEnhances * 0.06) * (1.00 + teamOEA * 0.05))) * Math.pow(1.5,monsterTPA));
 	    			}
-
 	    		}
     		});
     	});
@@ -366,7 +408,8 @@ export class LeaderSkillComponent {
     	let comboCount = indexArray.reduce((a, b) => a + b, 0);
     	slots.forEach((slot,slotIndex) => {
     		let monster:Monster = team[slot];
-    		
+    		let monster7C:number = monster.awoken_skills.slice(0,monster.awakening).filter(element => {return element == 43 }).length;
+
 			// primary attribute (always)
     		if (monster.element != null) {
 				let teamRows:number = teamAwakenings.filter(element => {return element == monster.element+21}).length;
@@ -379,7 +422,7 @@ export class LeaderSkillComponent {
 				// console.log("number of combos:", indexArray.reduce((a, b) => a + b, 0));
 				// console.log("X:", boardX);
 
-				output[slotIndex][0] = Math.ceil(output[slotIndex][0] * rowX * boardX);
+				output[slotIndex][0] = Math.ceil(output[slotIndex][0] * rowX * boardX * Math.pow(2, monster7C));
     		};
 
 			// sub-attribute
@@ -390,7 +433,7 @@ export class LeaderSkillComponent {
 
 				let boardX = 1 + (0.25*(comboCount-1));
 
-				output[slotIndex][1] = Math.ceil(output[slotIndex][1] * rowX * boardX);
+				output[slotIndex][1] = Math.ceil(output[slotIndex][1] * rowX * boardX * Math.pow(2, monster7C));
 			};
     	})
 
@@ -409,50 +452,67 @@ export class LeaderSkillComponent {
     	let lsX = [1.00, 1.00, 1.00, 1.00]
     	let current:any;
 
-    	console.log("parsed leader skills",leaderSkills);
+    	// console.log("parsed leader skills",leaderSkills);
 
         // "standard" : /color match|color cross|heart cross/i,
-        if (leaderSkills["leader"]["color match"]) {
-        	console.log("has color match")
-        }
+        ["leader","friend_leader"].forEach((leader) => {
+        	if (leaderSkills["leader"]["color match"]) {
+	        	console.log("has color match");
+	        }
 
-        if (leaderSkills["leader"]["color cross"]) {
-        	console.log("has color cross")
-        }
-		
-        if (leaderSkills["leader"]["heart cross"]) {
-        	console.log("has heart cross")
-        }
+	        if (leaderSkills["leader"]["color cross"]) {
+	        	console.log("has color cross");
+	        }
+			
+	        if (leaderSkills["leader"]["heart cross"]) {
+	        	console.log("has heart cross");
+	        }
 
-		// "scaling" : /connected orbs|flex match/i,
+			// "scaling" : /connected orbs|flex match/i,
+	        
+	        // "combo count" : /combo count/i,
+	        if (leaderSkills["leader"]["combo count"]) {
+	        	// console.log("has combo count")
+	        	
+	        	current = leaderSkills["leader"]["combo count"];
+
+	        	if (comboCount < current.multiplier[0][0]) {
+	        		// under lower limit then do nothing
+	        	} else {
+	        		let scalingX = (current.multiplier[1][2] - current.multiplier[0][2]) / (current.multiplier[1][0] - current.multiplier[0][0]);
+	        		if (comboCount >= current.multiplier[1][0]) {
+	        			// above upper limit then apply max
+	        			thisX = current.multiplier[1].slice(1,4);
+	        		} else {
+	        			thisX[1] = current.multiplier[0][2] + ((comboCount - current.multiplier[0][0]) * scalingX);
+	        		}
+	        		
+	        		// console.log("leaderX", thisX);
+
+					for (let x in lsX) {
+	    				lsX[x] *= thisX[x];
+	    			}
+	        	}
+	        } // combo count
+
+        });
         
-        // "combo count" : /combo count/i,
-        if (leaderSkills["leader"]["combo count"]) {
-        	// console.log("has combo count")
-        	
-        	current = leaderSkills["leader"]["combo count"];
+    	// console.log("final multiplier",lsX)
+		
+		// multiply damage by final multiplier
+		slots.forEach((slot,slotIndex) => {
+    		let monster:Monster = team[slot];
+    		
+			// primary attribute (always)
+    		if (monster.element != null) {
+				output[slotIndex][0] = Math.ceil(output[slotIndex][0] * lsX[1]);
+    		};
 
-        	if (comboCount < current.multiplier[0][0]) {
-        		// under lower limit then do nothing
-        	} else {
-        		let scalingX = (current.multiplier[1][2] - current.multiplier[0][2]) / (current.multiplier[1][0] - current.multiplier[0][0]);
-        		if (comboCount >= current.multiplier[1][0]) {
-        			// above upper limit then apply max
-        			thisX = current.multiplier[1].slice(1,4);
-        		} else {
-        			thisX[1] = current.multiplier[0][2] + ((comboCount - current.multiplier[0][0]) * scalingX);
-        		}
-        		
-        		// console.log("leaderX", thisX);
-
-				for (let x in lsX) {
-    				lsX[x] *= thisX[x];
-    			}
-        	}
-        } // combo count
-
-
-    	console.log("final multiplier",lsX)
+			// sub-attribute
+			if (monster.element2 != null) {
+				output[slotIndex][1] = Math.ceil(output[slotIndex][1] * lsX[1]);
+			};
+    	});
 
 		////// //////   group 4 end  ////// //////
     	////// ////// /////// ////// ////// //////
@@ -461,24 +521,41 @@ export class LeaderSkillComponent {
 		////// ////// /////// ////// ////// //////
     	////// clean up - push damage calc  //////
 
-    	// console.log("this.damageList", this.damageList)
+    	// total up damage - (temporary! not consindering enemy)
+    	output[6] = [];
+    	output[6][0] = output[0][0] + output[1][0] + output[2][0] + output[3][0] + output[4][0] + output[5][0];
+    	output[6][1] = output[0][1] + output[1][1] + output[2][1] + output[3][1] + output[4][1] + output[5][1];
+
+    	// add in multiplier
+    	output[7] = lsX;
+
+    	// add index???
+    	output[8] = [];
+    	output[8][0] = this.damageList.length;
+
+    	// add number of orbs used
+    	output[9] = [];
+    	output[9][0] = this.getComboSetSize(indexArray, uniqueComboList);
+
+    	// add damage calculation to damageList
     	this.damageList.push(output);
-    	
+
+    	// add combo to comboList
     	let newCombo: Combo[] = [];
 
     	indexArray.forEach((count,index) => {
     		if (count > 0) {
 	    		let currentCombo: Combo = uniqueComboList[index];
 	    		for (let i=0; i<count; i++) {
-	    			newCombo.push(currentCombo);
+	    			newCombo.push(currentCombo);   	
 	    		}
     		}
     	});
 
-    	console.log("newCombo", newCombo);
+    	// console.log("newCombo", newCombo);
     	this.comboList.push(newCombo);
 
-		////// //////  clean up end  ////// //////
+		////// ////// clean up - end ////// //////
     	////// ////// /////// ////// ////// //////
     }
 
